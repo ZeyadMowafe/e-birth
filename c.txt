@@ -1,0 +1,162 @@
+import 'package:dio/dio.dart';
+import 'package:ebirth/core/error/exceptions.dart';
+import 'package:ebirth/features/auth/data/models/user_model.dart';
+
+abstract class AuthRemoteDataSource {
+  Future<UserModel> login({required String email, required String password});
+
+  Future<UserModel> register({
+    required String name,
+    required String email,
+    required String password,
+    required String nationalId,
+    required String phoneNumber,
+  });
+
+  Future<void> forgotPassword({required String email});
+
+  Future<void> verifyOtp({required String email, required String otp});
+
+  Future<void> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  });
+}
+
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final Dio dio;
+  static const String baseUrl =
+      'https://e782c9f5-5ea9-422a-aaad-1d99355173ce.mock.pstmn.io';
+
+  AuthRemoteDataSourceImpl({required this.dio});
+
+  @override
+  Future<UserModel> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await dio.post(
+        '$baseUrl/auth/login',
+        data: {'email': email, 'password': password},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return UserModel(
+          id: response.data['user']?['id']?.toString() ?? 'mock-id',
+          name: response.data['user']?['name'] ?? 'Mock User',
+          email: response.data['user']?['email'] ?? email,
+          token: response.data['access_token'] ?? 'mock-token',
+        );
+      } else {
+        throw const ServerException(message: 'Invalid credentials');
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Server error occurred';
+      throw ServerException(message: message is List ? message.first : message);
+    } catch (e) {
+      throw const ServerException(message: 'Unexpected error occurred');
+    }
+  }
+
+  @override
+  Future<UserModel> register({
+    required String name,
+    required String email,
+    required String password,
+    required String nationalId,
+    required String phoneNumber,
+  }) async {
+    try {
+      final response = await dio.post(
+        '$baseUrl/auth/register',
+        data: {
+          "name": name,
+          "email": email,
+          "password": password,
+          "national_id": nationalId,
+          "phone_number": phoneNumber,
+        },
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return UserModel(
+          id: response.data['user']?['id']?.toString() ?? 'mock-id',
+          name: response.data['user']?['name'] ?? name,
+          email: response.data['user']?['email'] ?? email,
+          token: response.data['access_token'] ?? 'registration_success_token',
+        );
+      } else {
+        throw const ServerException(message: 'Failed to create account');
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Server error occurred';
+      throw ServerException(message: message is List ? message.first : message);
+    } catch (e) {
+      throw const ServerException(message: 'Unexpected error occurred');
+    }
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    try {
+      final response = await dio.post(
+        '$baseUrl/auth/forgot-password',
+        data: {'email': email},
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw const ServerException(message: 'Failed to send reset email');
+      }
+    } on DioException catch (e) {
+      final message =
+          e.response?.data['message'] ?? 'Failed to send reset email';
+      throw ServerException(message: message is List ? message.first : message);
+    } catch (e) {
+      throw const ServerException(message: 'Unexpected error occurred');
+    }
+  }
+
+  @override
+  Future<void> verifyOtp({required String email, required String otp}) async {
+    try {
+      final response = await dio.post(
+        '$baseUrl/auth/verify-otp',
+        data: {'email': email, 'otp': otp},
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw const ServerException(message: 'Invalid OTP code');
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'OTP verification failed';
+      throw ServerException(message: message is List ? message.first : message);
+    } catch (e) {
+      throw const ServerException(message: 'Unexpected error occurred');
+    }
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await dio.post(
+        '$baseUrl/auth/reset-password',
+        data: {'email': email, 'otp': otp, 'password': newPassword},
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw const ServerException(message: 'Failed to reset password');
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Failed to reset password';
+      throw ServerException(message: message is List ? message.first : message);
+    } catch (e) {
+      throw const ServerException(message: 'Unexpected error occurred');
+    }
+  }
+}
