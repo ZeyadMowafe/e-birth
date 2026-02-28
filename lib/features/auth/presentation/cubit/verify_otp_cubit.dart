@@ -8,11 +8,14 @@ class VerifyOtpCubit extends Cubit<VerifyOtpState> {
   VerifyOtpCubit({required this.verifyOtpUseCase})
     : super(const VerifyOtpInitial());
 
-  Future<void> verifyOtp({required String email, required String otp}) async {
+  Future<void> verifyOtp({
+    required String emailOrNationalId,
+    required String otp,
+  }) async {
     emit(const VerifyOtpLoading());
 
     final result = await verifyOtpUseCase(
-      VerifyOtpParams(email: email, otp: otp),
+      VerifyOtpParams(emailOrNationalId: emailOrNationalId, otp: otp),
     );
 
     result.fold(
@@ -21,4 +24,3 @@ class VerifyOtpCubit extends Cubit<VerifyOtpState> {
     );
   }
 }
-

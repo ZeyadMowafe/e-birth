@@ -8,25 +8,32 @@ import 'package:ebirth/features/auth/presentation/cubit/reset_password_cubit.dar
 import 'package:ebirth/features/auth/presentation/cubit/reset_password_state.dart';
 
 class ResetPasswordPage extends StatelessWidget {
-  final String email;
+  final String emailOrNationalId;
   final String otp;
 
-  const ResetPasswordPage({super.key, required this.email, required this.otp});
+  const ResetPasswordPage({
+    super.key,
+    required this.emailOrNationalId,
+    required this.otp,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<ResetPasswordCubit>(),
-      child: _ResetPasswordView(email: email, otp: otp),
+      child: _ResetPasswordView(emailOrNationalId: emailOrNationalId, otp: otp),
     );
   }
 }
 
 class _ResetPasswordView extends StatefulWidget {
-  final String email;
+  final String emailOrNationalId;
   final String otp;
 
-  const _ResetPasswordView({required this.email, required this.otp});
+  const _ResetPasswordView({
+    required this.emailOrNationalId,
+    required this.otp,
+  });
 
   @override
   State<_ResetPasswordView> createState() => _ResetPasswordViewState();
@@ -49,7 +56,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
   void _onSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<ResetPasswordCubit>().resetPassword(
-        email: widget.email,
+        emailOrNationalId: widget.emailOrNationalId,
         otp: widget.otp,
         newPassword: _newPasswordController.text.trim(),
       );

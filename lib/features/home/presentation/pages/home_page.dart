@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/core/widgets/tap_unfocus.dart';
+import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:ebirth/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final UserEntity? user;
+  const HomePage({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final displayName = user?.displayName ?? '';
+    final role = user?.role ?? '';
+
     return TapUnfocus(
       child: Scaffold(
         backgroundColor: AppColors.background,
@@ -18,7 +23,7 @@ class HomePage extends StatelessWidget {
           elevation: 0,
           title: Text(
             l10n.ebirth,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.bold,
             ),
@@ -30,47 +35,57 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
-        body: Center(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withAlpha(77),
-                      blurRadius: 24,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.health_and_safety_outlined,
-                  color: Colors.white,
-                  size: 50,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                l10n.welcomeToEBirth,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-                textAlign: TextAlign.center,
-              ),
               const SizedBox(height: 12),
-              Text(
-                l10n.homePageUnderConstruction,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
+              // ── Greeting ─────────────────────────────────────────
+              if (displayName.isNotEmpty) ...[
+                Text(
+                  'مرحباً،',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
+                const SizedBox(height: 4),
+                Text(
+                  displayName,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                if (role.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(top: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withAlpha(25),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: AppColors.primary.withAlpha(60),
+                      ),
+                    ),
+                    child: Text(
+                      role == 'Doctor'
+                          ? 'طبيب'
+                          : role == 'Parent'
+                          ? 'ولي أمر'
+                          : role,
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 24),
+              ],
             ],
           ),
         ),

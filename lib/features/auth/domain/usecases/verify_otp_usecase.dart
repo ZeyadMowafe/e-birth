@@ -11,17 +11,19 @@ class VerifyOtpUseCase extends UseCase<Unit, VerifyOtpParams> {
 
   @override
   Future<Either<Failure, Unit>> call(VerifyOtpParams params) {
-    return repository.verifyOtp(email: params.email, otp: params.otp);
+    return repository.verifyOtp(
+      emailOrNationalId: params.emailOrNationalId,
+      otp: params.otp,
+    );
   }
 }
 
 class VerifyOtpParams extends Equatable {
-  final String email;
+  final String emailOrNationalId;
   final String otp;
 
-  const VerifyOtpParams({required this.email, required this.otp});
+  const VerifyOtpParams({required this.emailOrNationalId, required this.otp});
 
   @override
-  List<Object?> get props => [email, otp];
+  List<Object?> get props => [emailOrNationalId, otp];
 }
-

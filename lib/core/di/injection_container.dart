@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -11,6 +13,7 @@ import 'package:ebirth/features/auth/domain/repositories/auth_repository.dart';
 import 'package:ebirth/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:ebirth/features/auth/domain/usecases/login_usecase.dart';
 import 'package:ebirth/features/auth/domain/usecases/register_usecase.dart';
+import 'package:ebirth/features/auth/domain/usecases/register_doctor_usecase.dart';
 import 'package:ebirth/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:ebirth/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:ebirth/features/auth/presentation/cubit/forgot_password_cubit.dart';
@@ -39,7 +42,15 @@ Future<void> initDependencies() async {
       ),
     );
 
+    // Bypass SSL certificate errors in debug mode (e.g. self-signed certs on shared hosting)
     if (kDebugMode) {
+      dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          final client = HttpClient();
+          client.badCertificateCallback = (cert, host, port) => true;
+          return client;
+        },
+      );
       dio.interceptors.add(
         LogInterceptor(
           requestBody: true,
@@ -66,13 +77,16 @@ Future<void> initDependencies() async {
   // Use Cases
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
+  sl.registerLazySingleton(() => RegisterDoctorUseCase(repository: sl()));
   sl.registerLazySingleton(() => ForgotPasswordUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerifyOtpUseCase(repository: sl()));
   sl.registerLazySingleton(() => ResetPasswordUseCase(repository: sl()));
 
   // Cubit — factory so a fresh instance is created every time
   sl.registerFactory<LoginCubit>(() => LoginCubit(loginUseCase: sl()));
-  sl.registerFactory<RegisterCubit>(() => RegisterCubit(registerUseCase: sl()));
+  sl.registerFactory<RegisterCubit>(
+    () => RegisterCubit(registerUseCase: sl(), registerDoctorUseCase: sl()),
+  );
   sl.registerFactory<ForgotPasswordCubit>(
     () => ForgotPasswordCubit(forgotPasswordUseCase: sl()),
   );

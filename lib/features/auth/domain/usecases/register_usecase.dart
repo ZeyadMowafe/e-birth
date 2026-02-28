@@ -18,6 +18,12 @@ class RegisterUseCase extends UseCase<UserEntity, RegisterParams> {
       password: params.password,
       nationalId: params.nationalId,
       phoneNumber: params.phoneNumber,
+      birthDate: params.birthDate,
+      village: params.village,
+      city: params.city,
+      gender: params.gender,
+      governorate: params.governorate,
+      bloodType: params.bloodType,
     );
   }
 }
@@ -28,6 +34,12 @@ class RegisterParams extends Equatable {
   final String password;
   final String nationalId;
   final String phoneNumber;
+  final String birthDate;
+  final String village;
+  final String city;
+  final int gender;
+  final int governorate;
+  final int bloodType;
 
   const RegisterParams({
     required this.name,
@@ -35,9 +47,26 @@ class RegisterParams extends Equatable {
     required this.password,
     required this.nationalId,
     required this.phoneNumber,
+    required this.birthDate,
+    required this.village,
+    required this.city,
+    required this.gender,
+    required this.governorate,
+    required this.bloodType,
   });
 
   @override
-  List<Object?> get props => [name, email, password, nationalId, phoneNumber];
+  List<Object?> get props => [
+    name,
+    email,
+    password,
+    nationalId,
+    phoneNumber,
+    birthDate,
+    village,
+    city,
+    gender,
+    governorate,
+    bloodType,
+  ];
 }
-

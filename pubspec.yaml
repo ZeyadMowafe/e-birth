@@ -40,6 +40,12 @@ dependencies:
   # Local Storage
   shared_preferences: ^2.5.2
 
+  # File Picker (for Doctor document upload)
+  file_picker: ^8.1.7
+
+  # Native Splash Screen
+  flutter_native_splash: ^2.4.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -60,9 +66,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -89,3 +95,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# ─── Native Splash Config ──────────────────────────────────────────────────
+flutter_native_splash:
+  color: "#1A73E8"
+  image: assets/images/splash_logo.png
+  android_12:
+    image: assets/images/splash_logo.png
+    color: "#1A73E8"
+    icon_background_color: "#1A73E8"
+  web: false
+  fullscreen: true

@@ -40,7 +40,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
   void _onSendLink() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<ForgotPasswordCubit>().forgotPassword(
-        email: _emailController.text.trim(),
+        emailOrNationalId: _emailController.text.trim(),
       );
     }
   }
@@ -61,7 +61,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
           // Navigate to OTP screen
           context.pushNamed(
             'verify-otp',
-            queryParameters: {'email': _emailController.text.trim()},
+            queryParameters: {'identifier': _emailController.text.trim()},
           );
         } else if (state is ForgotPasswordFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -138,21 +138,25 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
-                                labelText: l10n.email,
+                                labelText: 'البريد الإلكتروني أو الرقم القومي',
                                 prefixIcon: const Icon(
-                                  Icons.email_outlined,
+                                  Icons.person_outline,
                                   color: AppColors.primary,
                                 ),
                               ),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
-                                  return l10n.emailRequired;
+                                  return 'البريد الإلكتروني أو الرقم القومي مطلوب';
                                 }
+                                final val = value.trim();
                                 final emailRegex = RegExp(
                                   r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
                                 );
-                                if (!emailRegex.hasMatch(value.trim())) {
-                                  return l10n.emailInvalid;
+                                final idRegex = RegExp(r'^\d{14}$');
+
+                                if (!emailRegex.hasMatch(val) &&
+                                    !idRegex.hasMatch(val)) {
+                                  return 'يرجى إدخال بريد إلكتروني صحيح أو رقم قومي (14 رقم)';
                                 }
                                 return null;
                               },

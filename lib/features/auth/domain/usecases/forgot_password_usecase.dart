@@ -9,8 +9,7 @@ class ForgotPasswordUseCase extends UseCase<Unit, String> {
   ForgotPasswordUseCase({required this.repository});
 
   @override
-  Future<Either<Failure, Unit>> call(String email) {
-    return repository.forgotPassword(email: email);
+  Future<Either<Failure, Unit>> call(String emailOrNationalId) {
+    return repository.forgotPassword(emailOrNationalId: emailOrNationalId);
   }
 }
-

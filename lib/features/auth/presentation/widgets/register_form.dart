@@ -6,6 +6,36 @@ import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_state.dart';
 
+// ─── Egyptian Governorates ─────────────────────────────────────────────────
+const _governorates = [
+  'القاهرة',
+  'الإسكندرية',
+  'الجيزة',
+  'القليوبية',
+  'الشرقية',
+  'المنوفية',
+  'الغربية',
+  'كفر الشيخ',
+  'البحيرة',
+  'الدقهلية',
+  'دمياط',
+  'بورسعيد',
+  'الإسماعيلية',
+  'السويس',
+  'شمال سيناء',
+  'جنوب سيناء',
+  'الفيوم',
+  'بني سويف',
+  'المنيا',
+  'أسيوط',
+  'سوهاج',
+  'قنا',
+  'الأقصر',
+  'أسوان',
+  'البحر الأحمر',
+  'الوادي الجديد',
+  'مطروح',
+];
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -22,8 +52,17 @@ class _RegisterFormState extends State<RegisterForm> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _villageController = TextEditingController();
+  final _cityController = TextEditingController();
+
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  DateTime? _birthDate;
+  int _gender = 1; // 1=Male, 2=Female
+  int _governorate = 1;
+  int _bloodType = 1;
+
+  static const _bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   @override
   void dispose() {
@@ -33,19 +72,69 @@ class _RegisterFormState extends State<RegisterForm> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _villageController.dispose();
+    _cityController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickBirthDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(1995, 1, 1),
+      firstDate: DateTime(1940),
+      lastDate: DateTime.now().subtract(const Duration(days: 365 * 10)),
+      locale: const Locale('ar'),
+    );
+    if (picked != null) setState(() => _birthDate = picked);
   }
 
   void _onSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
+      if (_birthDate == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('الرجاء تحديد تاريخ الميلاد'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+        return;
+      }
+      final birthDateStr =
+          '${_birthDate!.year}-${_birthDate!.month.toString().padLeft(2, '0')}-${_birthDate!.day.toString().padLeft(2, '0')}';
+
       context.read<RegisterCubit>().register(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         nationalId: _nationalIdController.text.trim(),
         phoneNumber: _phoneController.text.trim(),
+        birthDate: birthDateStr,
+        village: _villageController.text.trim(),
+        city: _cityController.text.trim(),
+        gender: _gender,
+        governorate: _governorate,
+        bloodType: _bloodType,
       );
     }
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, bottom: 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primary,
+        ),
+      ),
+    );
   }
 
   @override
@@ -56,7 +145,50 @@ class _RegisterFormState extends State<RegisterForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Name Field
+          // ── Inline Error Banner ────────────────────────────────
+          BlocBuilder<RegisterCubit, RegisterState>(
+            builder: (context, state) {
+              if (state is RegisterFailure) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withAlpha(25),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.error.withAlpha(80)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: AppColors.error,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          state.message,
+                          style: TextStyle(
+                            color: AppColors.error,
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+
+          // ── Section: Personal Info ─────────────────────────────
+          _buildSectionTitle('البيانات الشخصية'),
+
           TextFormField(
             controller: _nameController,
             textInputAction: TextInputAction.next,
@@ -67,46 +199,16 @@ class _RegisterFormState extends State<RegisterForm> {
                 color: AppColors.primary,
               ),
             ),
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return l10n.nameRequired;
-              }
-              return null;
-            },
+            validator: (v) =>
+                (v == null || v.trim().isEmpty) ? l10n.nameRequired : null,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          // Email Field
-          TextFormField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: l10n.email,
-              hintText: l10n.emailHint,
-              prefixIcon: const Icon(
-                Icons.email_outlined,
-                color: AppColors.primary,
-              ),
-            ),
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return l10n.emailRequired;
-              }
-              final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
-              if (!emailRegex.hasMatch(value.trim())) {
-                return l10n.emailInvalid;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-
-          // National ID Field
           TextFormField(
             controller: _nationalIdController,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            textDirection: TextDirection.ltr,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(14),
@@ -118,23 +220,153 @@ class _RegisterFormState extends State<RegisterForm> {
                 color: AppColors.primary,
               ),
             ),
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return l10n.nationalIdRequired;
-              }
-              if (value.length != 14) {
-                return l10n.nationalIdInvalid;
-              }
+            validator: (v) {
+              if (v == null || v.isEmpty) return l10n.nationalIdRequired;
+              if (v.length != 14) return l10n.nationalIdInvalid;
               return null;
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          // Phone Field
+          // Birth Date picker
+          GestureDetector(
+            onTap: _pickBirthDate,
+            child: AbsorbPointer(
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'تاريخ الميلاد',
+                  hintText: _birthDate == null
+                      ? 'اختر تاريخ الميلاد'
+                      : '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}',
+                  prefixIcon: const Icon(
+                    Icons.calendar_today_outlined,
+                    color: AppColors.primary,
+                  ),
+                  suffixIcon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                controller: TextEditingController(
+                  text: _birthDate == null
+                      ? ''
+                      : '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}',
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Gender
+          DropdownButtonFormField<int>(
+            value: _gender,
+            decoration: const InputDecoration(
+              labelText: 'النوع',
+              prefixIcon: Icon(Icons.wc_outlined, color: AppColors.primary),
+            ),
+            items: const [
+              DropdownMenuItem(value: 1, child: Text('ذكر')),
+              DropdownMenuItem(value: 2, child: Text('أنثى')),
+            ],
+            onChanged: (v) => setState(() => _gender = v!),
+          ),
+          const SizedBox(height: 12),
+
+          // Blood Type
+          DropdownButtonFormField<int>(
+            value: _bloodType,
+            decoration: const InputDecoration(
+              labelText: 'فصيلة الدم',
+              prefixIcon: Icon(
+                Icons.bloodtype_outlined,
+                color: AppColors.primary,
+              ),
+            ),
+            items: List.generate(
+              _bloodTypes.length,
+              (i) =>
+                  DropdownMenuItem(value: i + 1, child: Text(_bloodTypes[i])),
+            ),
+            onChanged: (v) => setState(() => _bloodType = v!),
+          ),
+
+          // ── Section: Location ──────────────────────────────────
+          _buildSectionTitle('العنوان'),
+
+          // Governorate Dropdown
+          DropdownButtonFormField<int>(
+            value: _governorate,
+            decoration: const InputDecoration(
+              labelText: 'المحافظة',
+              prefixIcon: Icon(
+                Icons.location_city_outlined,
+                color: AppColors.primary,
+              ),
+            ),
+            items: List.generate(
+              _governorates.length,
+              (i) =>
+                  DropdownMenuItem(value: i + 1, child: Text(_governorates[i])),
+            ),
+            onChanged: (v) => setState(() => _governorate = v!),
+          ),
+          const SizedBox(height: 12),
+
+          TextFormField(
+            controller: _cityController,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              labelText: 'المدينة / المركز',
+              prefixIcon: const Icon(
+                Icons.map_outlined,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          TextFormField(
+            controller: _villageController,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              labelText: 'القرية / الحي',
+              prefixIcon: const Icon(
+                Icons.home_outlined,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+
+          // ── Section: Contact ───────────────────────────────────
+          _buildSectionTitle('بيانات التواصل'),
+
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            textDirection: TextDirection.ltr,
+            decoration: InputDecoration(
+              labelText: l10n.email,
+              hintText: l10n.emailHint,
+              prefixIcon: const Icon(
+                Icons.email_outlined,
+                color: AppColors.primary,
+              ),
+            ),
+            validator: (v) {
+              if (v == null || v.trim().isEmpty) return l10n.emailRequired;
+              final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
+              if (!emailRegex.hasMatch(v.trim())) return l10n.emailInvalid;
+              return null;
+            },
+          ),
+          const SizedBox(height: 12),
+
           TextFormField(
             controller: _phoneController,
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
+            textDirection: TextDirection.ltr,
             decoration: InputDecoration(
               labelText: l10n.phoneNumber,
               prefixIcon: const Icon(
@@ -142,20 +374,18 @@ class _RegisterFormState extends State<RegisterForm> {
                 color: AppColors.primary,
               ),
             ),
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return l10n.phoneRequired;
-              }
-              return null;
-            },
+            validator: (v) =>
+                (v == null || v.trim().isEmpty) ? l10n.phoneRequired : null,
           ),
-          const SizedBox(height: 16),
 
-          // Password Field
+          // ── Section: Security ──────────────────────────────────
+          _buildSectionTitle('كلمة المرور'),
+
           TextFormField(
             controller: _passwordController,
             obscureText: _obscurePassword,
             textInputAction: TextInputAction.next,
+            textDirection: TextDirection.ltr,
             decoration: InputDecoration(
               labelText: l10n.password,
               prefixIcon: const Icon(
@@ -173,23 +403,19 @@ class _RegisterFormState extends State<RegisterForm> {
                     setState(() => _obscurePassword = !_obscurePassword),
               ),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return l10n.passwordRequired;
-              }
-              if (value.length < 6) {
-                return l10n.passwordTooShort;
-              }
+            validator: (v) {
+              if (v == null || v.isEmpty) return l10n.passwordRequired;
+              if (v.length < 6) return l10n.passwordTooShort;
               return null;
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          // Confirm Password Field
           TextFormField(
             controller: _confirmPasswordController,
             obscureText: _obscureConfirmPassword,
             textInputAction: TextInputAction.done,
+            textDirection: TextDirection.ltr,
             onFieldSubmitted: (_) => _onSubmit(),
             decoration: InputDecoration(
               labelText: l10n.confirmPassword,
@@ -209,16 +435,12 @@ class _RegisterFormState extends State<RegisterForm> {
                 ),
               ),
             ),
-            validator: (value) {
-              if (value != _passwordController.text) {
-                return l10n.passwordsNotMatch;
-              }
-              return null;
-            },
+            validator: (v) =>
+                v != _passwordController.text ? l10n.passwordsNotMatch : null,
           ),
           const SizedBox(height: 28),
 
-          // Submit Button
+          // ── Submit Button ──────────────────────────────────────
           BlocBuilder<RegisterCubit, RegisterState>(
             builder: (context, state) {
               final isLoading = state is RegisterLoading;
@@ -242,4 +464,3 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 }
-

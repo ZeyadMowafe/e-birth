@@ -8,10 +8,10 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
   ForgotPasswordCubit({required this.forgotPasswordUseCase})
     : super(const ForgotPasswordInitial());
 
-  Future<void> forgotPassword({required String email}) async {
+  Future<void> forgotPassword({required String emailOrNationalId}) async {
     emit(const ForgotPasswordLoading());
 
-    final result = await forgotPasswordUseCase(email);
+    final result = await forgotPasswordUseCase(emailOrNationalId);
 
     result.fold(
       (failure) => emit(ForgotPasswordFailure(message: failure.message)),
@@ -19,4 +19,3 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     );
   }
 }
-

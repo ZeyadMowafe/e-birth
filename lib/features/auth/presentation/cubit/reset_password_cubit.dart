@@ -9,14 +9,18 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
     : super(const ResetPasswordInitial());
 
   Future<void> resetPassword({
-    required String email,
+    required String emailOrNationalId,
     required String otp,
     required String newPassword,
   }) async {
     emit(const ResetPasswordLoading());
 
     final result = await resetPasswordUseCase(
-      ResetPasswordParams(email: email, otp: otp, newPassword: newPassword),
+      ResetPasswordParams(
+        emailOrNationalId: emailOrNationalId,
+        otp: otp,
+        newPassword: newPassword,
+      ),
     );
 
     result.fold(
@@ -25,4 +29,3 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
     );
   }
 }
-

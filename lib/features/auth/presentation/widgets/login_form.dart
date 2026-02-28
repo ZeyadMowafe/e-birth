@@ -43,37 +43,73 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Email Field
+          // ── Inline Error Banner ───────────────────────────────
+          BlocBuilder<LoginCubit, LoginState>(
+            builder: (context, state) {
+              if (state is LoginFailure) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withAlpha(25),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.error.withAlpha(80)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: AppColors.error,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          state.message,
+                          style: TextStyle(
+                            color: AppColors.error,
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+
+          // ── Email / National ID Field ─────────────────────────
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: l10n.email,
-              hintText: l10n.emailHint,
-              prefixIcon: const Icon(
-                Icons.email_outlined,
-                color: AppColors.primary,
-              ),
+            textDirection: TextDirection.ltr,
+            decoration: const InputDecoration(
+              labelText: 'البريد الإلكتروني أو الرقم القومي',
+              hintText: 'أدخل البريد الإلكتروني أو الرقم القومي',
+              prefixIcon: Icon(Icons.person_outline, color: AppColors.primary),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return l10n.emailRequired;
-              }
-              final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
-              if (!emailRegex.hasMatch(value.trim())) {
-                return l10n.emailInvalid;
+                return 'الرجاء إدخال البريد الإلكتروني أو الرقم القومي';
               }
               return null;
             },
           ),
           const SizedBox(height: 16),
 
-          // Password Field
+          // ── Password Field ────────────────────────────────────
           TextFormField(
             controller: _passwordController,
             obscureText: _obscurePassword,
             textInputAction: TextInputAction.done,
+            textDirection: TextDirection.ltr,
             onFieldSubmitted: (_) => _onSubmit(),
             decoration: InputDecoration(
               labelText: l10n.password,
@@ -97,9 +133,6 @@ class _LoginFormState extends State<LoginForm> {
               if (value == null || value.isEmpty) {
                 return l10n.passwordRequired;
               }
-              if (value.length < 6) {
-                return l10n.passwordTooShort;
-              }
               return null;
             },
           ),
@@ -119,7 +152,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 16),
 
-          // Submit Button
+          // ── Submit Button ─────────────────────────────────────
           BlocBuilder<LoginCubit, LoginState>(
             builder: (context, state) {
               final isLoading = state is LoginLoading;
@@ -143,4 +176,3 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 }
-

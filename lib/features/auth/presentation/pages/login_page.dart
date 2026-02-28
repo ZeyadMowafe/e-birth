@@ -31,13 +31,30 @@ class _LoginView extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          context.goNamed('home');
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          context.goNamed('home', extra: state.user);
         } else if (state is LoginFailure) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
+              content: Row(
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(state.message)),
+                ],
+              ),
               backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 4),
             ),
           );
         }
@@ -124,7 +141,7 @@ class _LoginView extends StatelessWidget {
                     children: [
                       Text(l10n.dontHaveAccount),
                       TextButton(
-                        onPressed: () => context.pushNamed('register'),
+                        onPressed: () => context.pushNamed('role-selection'),
                         child: Text(
                           l10n.signUpNow,
                           style: const TextStyle(
