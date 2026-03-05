@@ -433,37 +433,37 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding1Title.
   ///
   /// In ar, this message translates to:
-  /// **'مرحباً في إي-بيرث'**
+  /// **'سجل طفلك بسهولة'**
   String get onboarding1Title;
 
   /// No description provided for @onboarding1Desc.
   ///
   /// In ar, this message translates to:
-  /// **'تطبيقك الموثوق لمتابعة صحة طفلك الرضيع وتسجيل تاريخه الصحي منذ اليوم الأول'**
+  /// **'سجل بيانات مولودك الجديد رقمياً وبالسرعة الفائقة مع نظام الولادة الإلكتروني المطور'**
   String get onboarding1Desc;
 
   /// No description provided for @onboarding2Title.
   ///
   /// In ar, this message translates to:
-  /// **'سجّل أمراض طفلك'**
+  /// **'متابعة التطعيمات'**
   String get onboarding2Title;
 
   /// No description provided for @onboarding2Desc.
   ///
   /// In ar, this message translates to:
-  /// **'احتفظ بسجل دقيق لكل مرض وعلاج وزيارة طبية لطفلك الرضيع في مكان واحد آمن'**
+  /// **'تلقى تنبيهات دورية بمواعيد تطعيمات طفلك لضمان سلامته'**
   String get onboarding2Desc;
 
   /// No description provided for @onboarding3Title.
   ///
   /// In ar, this message translates to:
-  /// **'متابعة صحية شاملة'**
+  /// **'سجل طبي متكامل'**
   String get onboarding3Title;
 
   /// No description provided for @onboarding3Desc.
   ///
   /// In ar, this message translates to:
-  /// **'راقب نمو طفلك وحالته الصحية بسهولة، وشارك السجلات مع طبيبك في أي وقت'**
+  /// **'احتفظ بكافة الفحوصات والتقارير الطبية في مكان واحد آمن'**
   String get onboarding3Desc;
 }
 

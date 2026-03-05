@@ -5,6 +5,7 @@ import 'package:ebirth/core/widgets/tap_unfocus.dart';
 import 'package:ebirth/core/helper/shared_prefs_helper.dart';
 import 'package:ebirth/features/onboarding/presentation/widgets/onboarding_slide.dart';
 import 'package:ebirth/l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -20,11 +21,11 @@ class _OnboardingPageState extends State<OnboardingPage>
 
   static const _totalPages = 3;
 
-  // Illustrations — network placeholders; replace with real assets later
+  // Illustrations — using local assets
   static const _images = [
-    'https://placehold.co/400x400/EEF4FF/1A73E8/png',
-    'https://placehold.co/400x400/F0FFF4/2E7D52/png',
-    'https://placehold.co/400x400/FFF8F0/E07B12/png',
+    'assets/images/onboarding_1.png',
+    'assets/images/Overlay.png',
+    'assets/images/Overlay+Border+Shadow+OverlayBlur.png',
   ];
 
   void _onPageChanged(int page) => setState(() => _currentPage = page);
@@ -45,6 +46,15 @@ class _OnboardingPageState extends State<OnboardingPage>
     }
   }
 
+  void _back() {
+    if (_currentPage > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -55,6 +65,7 @@ class _OnboardingPageState extends State<OnboardingPage>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isLast = _currentPage == _totalPages - 1;
+    final isNotFirst = _currentPage > 0;
 
     final slides = [
       (
@@ -78,135 +89,185 @@ class _OnboardingPageState extends State<OnboardingPage>
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
-            child: Column(
-              children: [
-                // ── Header ────────────────────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 14,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // ── E-Birth centered ───────────────────
-                      const Text(
-                        'E-Birth',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                          letterSpacing: -0.3,
-                        ),
-                      ),
-
-                      // ── Skip on the right ──────────────────
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: AnimatedOpacity(
+          body: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.onboardingBackground,
+              gradient: AppColors.onboardingGradient,
+            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // ── Header ────────────────────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Skip button on the Right (Start in RTL)
+                        AnimatedOpacity(
                           opacity: isLast ? 0 : 1,
                           duration: const Duration(milliseconds: 300),
                           child: TextButton(
                             onPressed: isLast ? null : _finish,
                             style: TextButton.styleFrom(
                               foregroundColor: AppColors.textSecondary,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 4,
-                              ),
+                              padding: EdgeInsets.zero,
                               minimumSize: Size.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             child: Text(
                               l10n.onboardingSkip,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
+                              style: GoogleFonts.readexPro(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.onboardingDesc,
+                                height: 1.5,
+                                letterSpacing: 0.4,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
 
-                // ── Page content ──────────────────────────────────────
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: _onPageChanged,
-                    itemCount: _totalPages,
-                    itemBuilder: (_, i) => OnboardingSlide(
-                      imageUrl: slides[i].image,
-                      title: slides[i].title,
-                      description: slides[i].desc,
+                        // Back arrow on the Left (End in RTL)
+                        AnimatedOpacity(
+                          opacity: isNotFirst ? 1 : 0,
+                          duration: const Duration(milliseconds: 300),
+                          child: IconButton(
+                            onPressed: isNotFirst ? _back : null,
+                            icon: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 20,
+                              color: AppColors.onboardingDesc,
+                            ),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
 
-                // ── Dots indicator ────────────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    _totalPages,
-                    (i) => AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      height: 8,
-                      width: _currentPage == i ? 28 : 8,
-                      decoration: BoxDecoration(
-                        color: _currentPage == i
-                            ? AppColors.primary
-                            : AppColors.border,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 28),
-
-                // ── Next / Get Started button ─────────────────────────
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton(
-                      onPressed: _next,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shadowColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                  // ── Page content ──────────────────────────────────────
+                  Expanded(
+                    child: Directionality(
+                      textDirection:
+                          TextDirection.ltr, // Force slider to start from left
+                      child: PageView.builder(
+                        controller: _pageController,
+                        onPageChanged: _onPageChanged,
+                        itemCount: _totalPages,
+                        itemBuilder: (_, i) => OnboardingSlide(
+                          imageUrl: slides[i].image,
+                          title: slides[i].title,
+                          description: slides[i].desc,
+                          borderRadius: i == 1
+                              ? 175
+                              : 20, // Keep circular for 2nd if preferred, but user said square. I'll use 20 for all square.
+                          fit: i == 2 ? BoxFit.contain : BoxFit.cover,
                         ),
                       ),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 250),
-                        child: Text(
-                          isLast
-                              ? l10n.onboardingGetStarted
-                              : l10n.onboardingNext,
-                          key: ValueKey(isLast),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.2,
+                    ),
+                  ),
+
+                  // ── Dots indicator ────────────────────────────────────
+                  Directionality(
+                    textDirection: TextDirection
+                        .ltr, // Force dots to start from left (index 0 on left)
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        _totalPages,
+                        (i) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          height: 8,
+                          width: _currentPage == i ? 24 : 8,
+                          decoration: BoxDecoration(
+                            color: _currentPage == i
+                                ? const Color(0xFF4EBCBA)
+                                : const Color(0xFFC0D3D3),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 36),
-              ],
+                  const SizedBox(height: 30),
+
+                  // ── Next / Get Started button ─────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Container(
+                      width: 326,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        gradient: const LinearGradient(
+                          begin: Alignment
+                              .centerRight, // 270deg -> from right to left
+                          end: Alignment.centerLeft,
+                          colors: [
+                            AppColors.onboardingButtonStart,
+                            AppColors.onboardingButtonEnd,
+                          ],
+                        ),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x334EBCCB), // rgba(78, 188, 186, 0.2)
+                            offset: Offset(0, 4),
+                            blurRadius: 6,
+                            spreadRadius: -4,
+                          ),
+                          BoxShadow(
+                            color: Color(0x334EBCCB),
+                            offset: Offset(0, 10),
+                            blurRadius: 15,
+                            spreadRadius: -3,
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _next,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.arrow_back, size: 20),
+                            const SizedBox(width: 10),
+                            Text(
+                              isLast
+                                  ? l10n.onboardingGetStarted
+                                  : l10n.onboardingNext,
+                              style: GoogleFonts.readexPro(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                height: 1.5,
+                                letterSpacing: 0.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 52),
+                ],
+              ),
             ),
           ),
         ),

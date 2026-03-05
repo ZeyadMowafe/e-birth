@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
-import 'package:ebirth/core/helper/shared_prefs_helper.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -54,6 +53,9 @@ class _SplashPageState extends State<SplashPage>
 
   Future<void> _navigate() async {
     if (!mounted) return;
+    // Force onboarding during development as requested
+    context.goNamed('onboarding');
+    /*
     final seen = await SharedPrefsHelper.isOnboardingSeen();
     if (!mounted) return;
     if (seen) {
@@ -61,6 +63,7 @@ class _SplashPageState extends State<SplashPage>
     } else {
       context.goNamed('onboarding');
     }
+    */
   }
 
   @override

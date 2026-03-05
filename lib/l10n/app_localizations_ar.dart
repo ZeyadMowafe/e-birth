@@ -181,23 +181,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingNext => 'التالي';
 
   @override
-  String get onboarding1Title => 'مرحباً في إي-بيرث';
+  String get onboarding1Title => 'سجل طفلك بسهولة';
 
   @override
   String get onboarding1Desc =>
-      'تطبيقك الموثوق لمتابعة صحة طفلك الرضيع وتسجيل تاريخه الصحي منذ اليوم الأول';
+      'سجل بيانات مولودك الجديد رقمياً وبالسرعة الفائقة مع نظام الولادة الإلكتروني المطور';
 
   @override
-  String get onboarding2Title => 'سجّل أمراض طفلك';
+  String get onboarding2Title => 'متابعة التطعيمات';
 
   @override
   String get onboarding2Desc =>
-      'احتفظ بسجل دقيق لكل مرض وعلاج وزيارة طبية لطفلك الرضيع في مكان واحد آمن';
+      'تلقى تنبيهات دورية بمواعيد تطعيمات طفلك لضمان سلامته';
 
   @override
-  String get onboarding3Title => 'متابعة صحية شاملة';
+  String get onboarding3Title => 'سجل طبي متكامل';
 
   @override
   String get onboarding3Desc =>
-      'راقب نمو طفلك وحالته الصحية بسهولة، وشارك السجلات مع طبيبك في أي وقت';
+      'احتفظ بكافة الفحوصات والتقارير الطبية في مكان واحد آمن';
 }

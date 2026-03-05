@@ -15,6 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
+  google_fonts: ^6.2.1
 
   # State Management
   flutter_bloc: ^9.0.0
@@ -68,6 +69,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/onboarding_1.png
     - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
