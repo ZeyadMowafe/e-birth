@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
 
 class SplashPage extends StatefulWidget {
@@ -78,68 +79,97 @@ class _SplashPageState extends State<SplashPage>
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment(0.25, 1.0), // ~345.44deg
+            end: Alignment(-0.25, -1.0),
+            colors: [Color(0xFF1DA8C4), Color(0xFFB8ECC8)],
+          ),
+        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Spacer(flex: 5),
+
             // ── Logo ──────────────────────────────────────────────
             FadeTransition(
               opacity: _fadeAnim,
               child: ScaleTransition(
                 scale: _scaleAnim,
-                child: Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(40),
-                    borderRadius: BorderRadius.circular(32),
-                    border: Border.all(
-                      color: Colors.white.withAlpha(80),
-                      width: 2,
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.asset(
-                      'assets/images/splash_logo.png',
-                      fit: BoxFit.cover,
-                    ),
+                child: SizedBox(
+                  width: 300,
+                  height: 300,
+                  child: Image.asset(
+                    'assets/images/splash_logo.png',
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 32),
 
-            // ── App Name ──────────────────────────────────────────
-            FadeTransition(
-              opacity: _textFadeAnim,
-              child: const Text(
-                'E-Birth',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 20),
+
+            // ── App Name: E-Birth ──────────────────────────────────
             FadeTransition(
               opacity: _textFadeAnim,
               child: Text(
-                'شهادة الميلاد الرقمية',
-                style: TextStyle(
-                  color: Colors.white.withAlpha(200),
-                  fontSize: 15,
-                  letterSpacing: 0.5,
+                'E-Birth',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.bevan(
+                  color: const Color(0xFF1E2939),
+                  fontSize: 45,
+                  fontWeight: FontWeight.w400,
+                  height: 32 / 45,
                 ),
               ),
             ),
 
-            const SizedBox(height: 80),
+            const SizedBox(height: 24),
 
-            // ── Loading dots ──────────────────────────────────────
-            FadeTransition(opacity: _textFadeAnim, child: _LoadingDots()),
+            // ── Subtitle 1 ────────────────────────────────────────
+            FadeTransition(
+              opacity: _textFadeAnim,
+              child: Text(
+                'نظام إدارة السجل الصحي للأطفال',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.notoSansArabic(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  height: 40 / 22,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // ── Subtitle 2 ────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: FadeTransition(
+                opacity: _textFadeAnim,
+                child: Text(
+                  'رعاية متكاملة لمولودك منذ اللحظة الأولى',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.notoSansArabic(
+                    color: const Color(0xFFFFFFFF).withAlpha(204), // #FFFFFFCC
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                    height: 28 / 18,
+                  ),
+                ),
+              ),
+            ),
+
+            const Spacer(flex: 4),
+
+            // ── Bottom: Loading dots ──────────────────────────
+            Padding(
+              padding: const EdgeInsets.only(bottom: 64),
+              child: FadeTransition(
+                opacity: _textFadeAnim,
+                child: _LoadingDots(),
+              ),
+            ),
           ],
         ),
       ),

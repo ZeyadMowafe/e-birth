@@ -100,11 +100,11 @@ flutter:
 
 # ─── Native Splash Config ──────────────────────────────────────────────────
 flutter_native_splash:
-  color: "#1A73E8"
+  color: "#1DA8C4"
   image: assets/images/splash_logo.png
   android_12:
     image: assets/images/splash_logo.png
-    color: "#1A73E8"
-    icon_background_color: "#1A73E8"
+    color: "#1DA8C4"
+    icon_background_color: "#1DA8C4"
   web: false
   fullscreen: true
