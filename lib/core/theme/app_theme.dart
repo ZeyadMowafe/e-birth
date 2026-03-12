@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
 
 class AppTheme {
@@ -14,7 +15,7 @@ class AppTheme {
         error: AppColors.error,
       ),
       scaffoldBackgroundColor: AppColors.background,
-      fontFamily: 'Roboto',
+      textTheme: GoogleFonts.readexProTextTheme(),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
@@ -70,4 +71,3 @@ class AppTheme {
     );
   }
 }
-

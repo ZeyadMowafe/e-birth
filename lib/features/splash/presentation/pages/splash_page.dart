@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ebirth/core/constants/app_colors.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

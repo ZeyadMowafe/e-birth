@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/custom_text_field.dart';
+import 'package:ebirth/core/widgets/custom_gradient_button.dart';
 import 'package:ebirth/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/login_state.dart';
 import 'package:ebirth/l10n/app_localizations.dart';
@@ -84,16 +86,48 @@ class _LoginFormState extends State<LoginForm> {
             },
           ),
 
+          // ── Form Titles ─────────────────────────────────────────
+          const Text(
+            'تسجيل الدخول',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 24,
+              height: 32 / 24,
+              color: Color(0xFF1E2939),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'أهلاً بعودتك، سجل دخولك للمتابعة',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              height: 20 / 14,
+              color: Color(0xFF4A5565),
+            ),
+          ),
+          const SizedBox(height: 24),
+
           // ── Email / National ID Field ─────────────────────────
-          TextFormField(
+          const Text(
+            'البريد الإلكتروني أو الرقم القومي',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              height: 20 / 14,
+              color: Color(0xFF333333),
+            ),
+          ),
+          const SizedBox(height: 8),
+          CustomTextField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             textDirection: TextDirection.ltr,
-            decoration: const InputDecoration(
-              labelText: 'البريد الإلكتروني أو الرقم القومي',
-              hintText: 'أدخل البريد الإلكتروني أو الرقم القومي',
-              prefixIcon: Icon(Icons.person_outline, color: AppColors.primary),
+            hintText: 'أدخل البريد الإلكتروني أو الرقم القومي',
+            prefixIcon: const Icon(
+              Icons.person_outline,
+              color: Color(0xFF4E8B97),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
@@ -105,29 +139,38 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 16),
 
           // ── Password Field ────────────────────────────────────
-          TextFormField(
+          Text(
+            l10n.password,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              height: 20 / 14,
+              color: Color(0xFF333333),
+            ),
+          ),
+          const SizedBox(height: 8),
+          CustomTextField(
             controller: _passwordController,
             obscureText: _obscurePassword,
             textInputAction: TextInputAction.done,
             textDirection: TextDirection.ltr,
             onFieldSubmitted: (_) => _onSubmit(),
-            decoration: InputDecoration(
-              labelText: l10n.password,
-              hintText: l10n.passwordHint,
-              prefixIcon: const Icon(
-                Icons.lock_outlined,
-                color: AppColors.primary,
+            hintText: l10n.passwordHint,
+            prefixIcon: const Icon(
+              Icons.lock_outlined,
+              color: Color(0xFF4E8B97),
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: const Color(
+                  0x664E8B97,
+                ), // #4E8B9766 (45% opacity of cyan)
               ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _obscurePassword
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
-                  color: AppColors.textSecondary,
-                ),
-                onPressed: () =>
-                    setState(() => _obscurePassword = !_obscurePassword),
-              ),
+              onPressed: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -136,40 +179,65 @@ class _LoginFormState extends State<LoginForm> {
               return null;
             },
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () => context.pushNamed('forgot-password'),
-              child: Text(
-                l10n.forgotPassword,
-                style: const TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 32),
 
-          // ── Submit Button ─────────────────────────────────────
+          // ── Submit Button (Gradient) ─────────────────────────
           BlocBuilder<LoginCubit, LoginState>(
             builder: (context, state) {
-              final isLoading = state is LoginLoading;
-              return ElevatedButton(
-                onPressed: isLoading ? null : _onSubmit,
-                child: isLoading
-                    ? const SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
-                        ),
-                      )
-                    : Text(l10n.loginButton),
+              return CustomGradientButton(
+                text: 'تسجيل الدخول',
+                isLoading: state is LoginLoading,
+                onPressed: _onSubmit,
               );
             },
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Links (Create Account / Forgot Password) ────────────
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Create Account (Left / First in Row)
+              TextButton(
+                onPressed: () => context.pushNamed('role-selection'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(50, 30),
+                  alignment: Alignment.centerLeft,
+                ),
+                child: const Text(
+                  'إنشاء حساب جديد',
+                  style: TextStyle(
+                    fontFamily: 'Arial',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    height: 24 / 16,
+                    color: Color(0xFF00A63E), // Green
+                  ),
+                ),
+              ),
+
+              // Forgot Password (Right / Second in Row)
+              TextButton(
+                onPressed: () => context.pushNamed('forgot-password'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(50, 30),
+                  alignment: Alignment.centerRight,
+                ),
+                child: const Text(
+                  'نسيت كلمة المرور؟',
+                  style: TextStyle(
+                    fontFamily: 'Arial',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    height: 24 / 16,
+                    color: Color(0xFF155DFC), // Blue
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

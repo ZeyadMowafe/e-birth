@@ -44,8 +44,7 @@ dependencies:
   # File Picker (for Doctor document upload)
   file_picker: ^8.1.7
 
-  # Native Splash Screen
-  flutter_native_splash: ^2.4.3
+
 
 dev_dependencies:
   flutter_test:
@@ -97,14 +96,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
-# ─── Native Splash Config ──────────────────────────────────────────────────
-flutter_native_splash:
-  color: "#1DA8C4"
-  image: assets/images/splash_logo.png
-  android_12:
-    image: assets/images/splash_logo.png
-    color: "#1DA8C4"
-    icon_background_color: "#1DA8C4"
-  web: false
-  fullscreen: true

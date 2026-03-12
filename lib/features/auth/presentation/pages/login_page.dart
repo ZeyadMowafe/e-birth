@@ -5,6 +5,7 @@ import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/login_state.dart';
+import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/core/widgets/tap_unfocus.dart';
 import 'package:ebirth/features/auth/presentation/widgets/login_form.dart';
 import 'package:ebirth/l10n/app_localizations.dart';
@@ -60,100 +61,43 @@ class _LoginView extends StatelessWidget {
         }
       },
       child: TapUnfocus(
-        child: Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 40),
+        child: AuthLayout(
+          title: 'نظام المواليد الإلكتروني',
+          subtitle: 'E-Birth System',
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 20),
+                const LoginForm(), // The updated form
 
-                  // Logo / Icon
-                  Center(
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        gradient: AppColors.primaryGradient,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withAlpha(
-                              77,
-                            ), // approx 0.3
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.health_and_safety_outlined,
-                        color: Colors.white,
-                        size: 40,
+                const SizedBox(height: 48), // Space before the register link
+                // ── Footer Register Link ──────────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'ليس لديك حساب؟', // l10n.dontHaveAccount
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 14,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Welcome Text
-                  Text(
-                    l10n.ebirth,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.loginSubtitle,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 48),
-
-                  // Form Card
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(15), // approx 0.06
-                          blurRadius: 24,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: const LoginForm(),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Register Link
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(l10n.dontHaveAccount),
-                      TextButton(
-                        onPressed: () => context.pushNamed('role-selection'),
-                        child: Text(
-                          l10n.signUpNow,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
+                    TextButton(
+                      onPressed: () => context.pushNamed('role-selection'),
+                      child: const Text(
+                        'سجل الأن', // l10n.signUpNow
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                          fontSize: 14,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         ),

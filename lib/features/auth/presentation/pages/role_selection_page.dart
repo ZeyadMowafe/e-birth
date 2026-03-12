@@ -1,96 +1,86 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/auth_layout.dart';
 
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            color: AppColors.textPrimary,
-          ),
-          onPressed: () => context.pop(),
-        ),
+    return AuthLayout(
+      showLogo: false,
+      headerCrossAxisAlignment: CrossAxisAlignment.start,
+      bottomSheetHeight: 644,
+      bottomSheetPadding: const EdgeInsets.only(top: 32, left: 24, right: 24),
+      title: 'إنشاء حساب جديد',
+      titleStyle: const TextStyle(
+        fontFamily: 'Arial',
+        fontWeight: FontWeight.w700, // Bold
+        fontSize: 40,
+        height: 40 / 40,
+        color: Colors.white,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 16),
+      subtitle: 'حدد نوع الحساب الذي تريد إنشاءه',
+      subtitleStyle: const TextStyle(
+        fontWeight: FontWeight.w600, // SemiBold
+        fontSize: 16,
+        height: 24 / 16,
+        color: Colors.white,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 24),
 
-              // ── Header ────────────────────────────────────────────
-              Center(
-                child: Container(
-                  width: 72,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withAlpha(77),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
+            // ── Parent Card ────────────────────────────────────────
+            _RoleCard(
+              icon: Icons.family_restroom_rounded,
+              title: 'ولي أمر',
+              subtitle: 'سجّل لتتمكن من متابعة شهادات ميلاد أطفالك',
+              color: AppColors.primary,
+              onTap: () => context.pushNamed('register', extra: 'Parent'),
+            ),
+            const SizedBox(height: 16),
+
+            // ── Doctor Card ────────────────────────────────────────
+            _RoleCard(
+              icon: Icons.medical_services_outlined,
+              title: 'طبيب',
+              subtitle:
+                  'سجّل كطبيب مع رفع مستندات التحقق — سيتم المراجعة خلال 72 ساعة',
+              color: const Color(0xFF00897B),
+              onTap: () => context.pushNamed('register', extra: 'Doctor'),
+            ),
+            const SizedBox(height: 48),
+
+            // ── Footer Login Link ──────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'لديك حساب بالفعل؟',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
                   ),
-                  child: const Icon(
-                    Icons.account_circle_outlined,
-                    color: Colors.white,
-                    size: 36,
+                ),
+                TextButton(
+                  onPressed: () => context.pop(),
+                  child: const Text(
+                    'تسجيل الدخول',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'إنشاء حساب جديد',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'اختر نوع حسابك',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-
-              // ── Parent Card ────────────────────────────────────────
-              _RoleCard(
-                icon: Icons.family_restroom_rounded,
-                title: 'ولي أمر',
-                subtitle: 'سجّل لتتمكن من متابعة شهادات ميلاد أطفالك',
-                color: AppColors.primary,
-                onTap: () => context.pushNamed('register', extra: 'Parent'),
-              ),
-              const SizedBox(height: 16),
-
-              // ── Doctor Card ────────────────────────────────────────
-              _RoleCard(
-                icon: Icons.medical_services_outlined,
-                title: 'طبيب',
-                subtitle:
-                    'سجّل كطبيب مع رفع مستندات التحقق — سيتم المراجعة خلال 72 ساعة',
-                color: const Color(0xFF00897B),
-                onTap: () => context.pushNamed('register', extra: 'Doctor'),
-              ),
-            ],
-          ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );
