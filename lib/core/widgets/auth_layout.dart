@@ -12,6 +12,8 @@ class AuthLayout extends StatelessWidget {
   final CrossAxisAlignment headerCrossAxisAlignment;
   final double? bottomSheetHeight;
   final EdgeInsetsGeometry bottomSheetPadding;
+  final double headerTopPadding;
+  final bool showBackButton;
 
   const AuthLayout({
     super.key,
@@ -28,6 +30,8 @@ class AuthLayout extends StatelessWidget {
       left: 24,
       right: 24,
     ),
+    this.headerTopPadding = 40.0,
+    this.showBackButton = false,
   });
 
   @override
@@ -55,7 +59,11 @@ class AuthLayout extends StatelessWidget {
               child: Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 40, left: 24, right: 24),
+                  padding: EdgeInsets.only(
+                    top: headerTopPadding,
+                    left: 24,
+                    right: 24,
+                  ),
                   child: SizedBox(
                     width: double.infinity,
                     child: Column(
@@ -159,6 +167,33 @@ class AuthLayout extends StatelessWidget {
                 child: child,
               ),
             ),
+
+            // ── Back Button ──────────────────────────────────────────
+            if (showBackButton)
+              Positioned(
+                top: 60,
+                left: 24,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.5),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

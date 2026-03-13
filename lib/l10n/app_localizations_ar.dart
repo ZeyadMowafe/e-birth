@@ -66,30 +66,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forgotPassword => 'نسيت كلمة المرور؟';
 
   @override
-  String get forgotPasswordTitle => 'نسيت كلمة المرور';
+  String get forgotPasswordTitle => 'استعادة كلمة المرور';
 
   @override
   String get forgotPasswordSubtitle =>
-      'أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور';
+      'أدخل بريدك الإلكتروني لاستلام رمز التحقق';
 
   @override
-  String get sendResetLink => 'إرسال رابط إعادة التعيين';
+  String get sendResetLink => 'إرسال رمز التحقق';
 
   @override
-  String get resetLinkSent =>
-      'تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني!';
+  String get resetLinkSent => 'تم إرسال رمز التحقق إلى بريدك الإلكتروني!';
 
   @override
   String get otpTitle => 'رمز التحقق';
 
   @override
-  String get otpSubtitle => 'أدخل الرمز المكون من 4 أرقام المرسل إلى ';
+  String get otpSubtitle => 'أدخل الرمز المكون من 6 أرقام المرسل إلى ';
 
   @override
-  String get verify => 'تحقق';
+  String get verify => 'تأكيد الرمز';
 
   @override
   String get resendOtp => 'إعادة إرسال الرمز';
+
+  @override
+  String get didNotReceiveCode => 'لم تستلم الرمز؟';
+
+  @override
+  String get resendCode => 'إعادة الإرسال';
 
   @override
   String get otpInvalid => 'رمز التحقق غير صالح';

@@ -10,7 +10,9 @@ class RoleSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AuthLayout(
       showLogo: false,
+      showBackButton: true,
       headerCrossAxisAlignment: CrossAxisAlignment.start,
+      headerTopPadding: 90.0,
       bottomSheetHeight: 644,
       bottomSheetPadding: const EdgeInsets.only(top: 32, left: 24, right: 24),
       title: 'إنشاء حساب جديد',
@@ -36,21 +38,33 @@ class RoleSelectionPage extends StatelessWidget {
 
             // ── Parent Card ────────────────────────────────────────
             _RoleCard(
-              icon: Icons.family_restroom_rounded,
+              icon: Icons.person_outline,
               title: 'ولي أمر',
-              subtitle: 'سجّل لتتمكن من متابعة شهادات ميلاد أطفالك',
-              color: AppColors.primary,
+              subtitle: ' حساب للآباء والأمهات لمتابعة أطفالهم',
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFB8ECC8), Color(0xFF9DD9B4)],
+              ),
+              iconColor: const Color(
+                0xFF1DA8C4,
+              ), // Keeping it matching the theme, or user can specify later
               onTap: () => context.pushNamed('register', extra: 'Parent'),
             ),
             const SizedBox(height: 16),
 
             // ── Doctor Card ────────────────────────────────────────
             _RoleCard(
-              icon: Icons.medical_services_outlined,
+              icon: Icons.monitor_heart_outlined,
               title: 'طبيب',
-              subtitle:
-                  'سجّل كطبيب مع رفع مستندات التحقق — سيتم المراجعة خلال 72 ساعة',
-              color: const Color(0xFF00897B),
+              subtitle: 'حساب للأطباء لإدارة السجلات الطبية',
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF1DA8C4), Color(0xFF16899F)],
+              ),
+              textColor: Colors.white,
+              iconColor: const Color(0xFF1DA8C4),
               onTap: () => context.pushNamed('register', extra: 'Doctor'),
             ),
             const SizedBox(height: 48),
@@ -91,74 +105,90 @@ class _RoleCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color color;
+  final Gradient gradient;
   final VoidCallback onTap;
+  final Color? textColor;
+  final Color? iconColor;
 
   const _RoleCard({
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.color,
+    required this.gradient,
     required this.onTap,
+    this.textColor,
+    this.iconColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveTextColor = textColor ?? AppColors.textPrimary;
+    final effectiveSubtitleColor =
+        textColor?.withAlpha(200) ?? AppColors.textSecondary;
+    final effectiveIconColor = iconColor ?? AppColors.primary;
+
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      child: Container(
+        height: 124,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
             BoxShadow(
-              color: Colors.black.withAlpha(15),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
+              color: Color(0x1A000000), // #0000001A
+              blurRadius: 6,
+              offset: Offset(0, 4),
+              spreadRadius: -4,
+            ),
+            BoxShadow(
+              color: Color(0x1A000000), // #0000001A
+              blurRadius: 15,
+              offset: Offset(0, 10),
+              spreadRadius: -3,
             ),
           ],
-          border: Border.all(color: color.withAlpha(40), width: 1.5),
         ),
         child: Row(
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: color.withAlpha(25),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, color: color, size: 28),
-            ),
-            const SizedBox(width: 16),
+            // Title and Subtitle (Right side in RTL)
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     title,
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                      color: effectiveTextColor,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 10),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                      color: effectiveSubtitleColor,
                       height: 1.5,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
-            Icon(Icons.arrow_forward_ios_rounded, color: color, size: 18),
+            const SizedBox(width: 16),
+            // Icon (Left side in RTL because it is placed second in the Row)
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(icon, color: effectiveIconColor, size: 28),
+            ),
           ],
         ),
       ),

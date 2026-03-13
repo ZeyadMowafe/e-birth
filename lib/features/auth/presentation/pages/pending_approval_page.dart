@@ -106,7 +106,7 @@ class PendingApprovalPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      'سيتم الرد خلال 72 ساعة',
+                      'سيتم الرد خلال 24-48 ساعة',
                       style: TextStyle(
                         color: const Color(0xFF00897B),
                         fontWeight: FontWeight.w600,

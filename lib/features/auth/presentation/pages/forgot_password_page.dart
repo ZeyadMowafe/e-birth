@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
-import 'package:ebirth/core/widgets/tap_unfocus.dart';
 import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/forgot_password_state.dart';
 import 'package:ebirth/l10n/app_localizations.dart';
+import 'package:ebirth/core/widgets/auth_layout.dart';
+import 'package:ebirth/core/widgets/custom_text_field.dart';
+import 'package:ebirth/core/widgets/custom_gradient_button.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({super.key});
@@ -74,115 +76,70 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
         }
       },
       builder: (context, state) {
-        return TapUnfocus(
-          child: Scaffold(
-            backgroundColor: AppColors.background,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: AppColors.textPrimary,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 40),
-                    // Header
-                    Text(
-                      l10n.forgotPasswordTitle,
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
-                          ),
-                      textAlign: TextAlign.center,
+        return AuthLayout(
+          showLogo: false,
+          showBackButton: true,
+          headerCrossAxisAlignment: CrossAxisAlignment.start,
+          headerTopPadding: 90.0,
+          bottomSheetHeight: MediaQuery.of(context).size.height * 0.72,
+          title: l10n.forgotPasswordTitle,
+          titleStyle: const TextStyle(
+            fontFamily: 'Arial',
+            fontWeight: FontWeight.w700,
+            fontSize: 40,
+            height: 40 / 40,
+            color: Colors.white,
+          ),
+          subtitle: l10n.forgotPasswordSubtitle,
+          subtitleStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            height: 24 / 16,
+            color: Colors.white,
+          ),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 24),
+                  CustomTextField(
+                    label: 'البريد الإلكتروني   ',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.done,
+                    textDirection: TextDirection.ltr,
+                    hintText: 'أدخل البريد الإلكتروني',
+                    prefixIcon: const Icon(
+                      Icons.person_outline,
+                      color: Color(0xFF4E8B97),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.forgotPasswordSubtitle,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 48),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'البريد الإلكتروني أو الرقم القومي مطلوب';
+                      }
+                      final val = value.trim();
+                      final emailRegex = RegExp(
+                        r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      );
+                      final idRegex = RegExp(r'^\d{14}$');
 
-                    // Form
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(15),
-                            blurRadius: 24,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                labelText: 'البريد الإلكتروني أو الرقم القومي',
-                                prefixIcon: const Icon(
-                                  Icons.person_outline,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'البريد الإلكتروني أو الرقم القومي مطلوب';
-                                }
-                                final val = value.trim();
-                                final emailRegex = RegExp(
-                                  r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                );
-                                final idRegex = RegExp(r'^\d{14}$');
-
-                                if (!emailRegex.hasMatch(val) &&
-                                    !idRegex.hasMatch(val)) {
-                                  return 'يرجى إدخال بريد إلكتروني صحيح أو رقم قومي (14 رقم)';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 32),
-                            ElevatedButton(
-                              onPressed: state is ForgotPasswordLoading
-                                  ? null
-                                  : _onSendLink,
-                              child: state is ForgotPasswordLoading
-                                  ? const SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : Text(l10n.sendResetLink),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                      if (!emailRegex.hasMatch(val)) {
+                        return 'يرجى إدخال بريد إلكتروني صحيح';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => _onSendLink(),
+                  ),
+                  const SizedBox(height: 32),
+                  CustomGradientButton(
+                    text: l10n.sendResetLink,
+                    isLoading: state is ForgotPasswordLoading,
+                    onPressed: _onSendLink,
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
             ),
           ),

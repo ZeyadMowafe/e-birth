@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -11,6 +12,8 @@ class CustomTextField extends StatelessWidget {
   final TextDirection? textDirection;
   final void Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatters;
+  final String? label;
 
   const CustomTextField({
     super.key,
@@ -24,11 +27,13 @@ class CustomTextField extends StatelessWidget {
     this.textDirection,
     this.onFieldSubmitted,
     this.validator,
+    this.inputFormatters,
+    this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget field = Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -47,6 +52,8 @@ class CustomTextField extends StatelessWidget {
         textInputAction: textInputAction,
         textDirection: textDirection,
         onFieldSubmitted: onFieldSubmitted,
+        validator: validator,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: const TextStyle(fontFamily: 'Arial'),
@@ -77,8 +84,28 @@ class CustomTextField extends StatelessWidget {
             vertical: 18,
           ),
         ),
-        validator: validator,
       ),
     );
+
+    if (label != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label!,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              height: 20 / 14,
+              color: Color(0xFF333333),
+            ),
+          ),
+          const SizedBox(height: 8),
+          field,
+        ],
+      );
+    }
+
+    return field;
   }
 }

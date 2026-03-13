@@ -211,25 +211,25 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordTitle.
   ///
   /// In ar, this message translates to:
-  /// **'نسيت كلمة المرور'**
+  /// **'استعادة كلمة المرور'**
   String get forgotPasswordTitle;
 
   /// No description provided for @forgotPasswordSubtitle.
   ///
   /// In ar, this message translates to:
-  /// **'أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور'**
+  /// **'أدخل بريدك الإلكتروني لاستلام رمز التحقق'**
   String get forgotPasswordSubtitle;
 
   /// No description provided for @sendResetLink.
   ///
   /// In ar, this message translates to:
-  /// **'إرسال رابط إعادة التعيين'**
+  /// **'إرسال رمز التحقق'**
   String get sendResetLink;
 
   /// No description provided for @resetLinkSent.
   ///
   /// In ar, this message translates to:
-  /// **'تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني!'**
+  /// **'تم إرسال رمز التحقق إلى بريدك الإلكتروني!'**
   String get resetLinkSent;
 
   /// No description provided for @otpTitle.
@@ -241,13 +241,13 @@ abstract class AppLocalizations {
   /// No description provided for @otpSubtitle.
   ///
   /// In ar, this message translates to:
-  /// **'أدخل الرمز المكون من 4 أرقام المرسل إلى '**
+  /// **'أدخل الرمز المكون من 6 أرقام المرسل إلى '**
   String get otpSubtitle;
 
   /// No description provided for @verify.
   ///
   /// In ar, this message translates to:
-  /// **'تحقق'**
+  /// **'تأكيد الرمز'**
   String get verify;
 
   /// No description provided for @resendOtp.
@@ -255,6 +255,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إعادة إرسال الرمز'**
   String get resendOtp;
+
+  /// No description provided for @didNotReceiveCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تستلم الرمز؟'**
+  String get didNotReceiveCode;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة الإرسال'**
+  String get resendCode;
 
   /// No description provided for @otpInvalid.
   ///

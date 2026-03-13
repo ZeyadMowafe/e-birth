@@ -3,6 +3,7 @@ import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:ebirth/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/login_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/pending_approval_page.dart';
+import 'package:ebirth/features/auth/presentation/pages/password_reset_success_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/register_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/role_selection_page.dart';
@@ -85,6 +86,11 @@ class AppRouter {
           final otp = state.uri.queryParameters['otp'] ?? '';
           return ResetPasswordPage(emailOrNationalId: identifier, otp: otp);
         },
+      ),
+      GoRoute(
+        path: '/reset-password-success',
+        name: 'reset-password-success',
+        builder: (context, state) => const PasswordResetSuccessPage(),
       ),
     ],
   );

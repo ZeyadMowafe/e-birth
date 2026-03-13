@@ -109,17 +109,8 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 24),
 
           // ── Email / National ID Field ─────────────────────────
-          const Text(
-            'البريد الإلكتروني أو الرقم القومي',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              height: 20 / 14,
-              color: Color(0xFF333333),
-            ),
-          ),
-          const SizedBox(height: 8),
           CustomTextField(
+            label: 'البريد الإلكتروني أو الرقم القومي',
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
@@ -139,17 +130,8 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 16),
 
           // ── Password Field ────────────────────────────────────
-          Text(
-            l10n.password,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              height: 20 / 14,
-              color: Color(0xFF333333),
-            ),
-          ),
-          const SizedBox(height: 8),
           CustomTextField(
+            label: 'كلمة المرور',
             controller: _passwordController,
             obscureText: _obscurePassword,
             textInputAction: TextInputAction.done,
@@ -165,9 +147,7 @@ class _LoginFormState extends State<LoginForm> {
                 _obscurePassword
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
-                color: const Color(
-                  0x664E8B97,
-                ), // #4E8B9766 (45% opacity of cyan)
+                color: const Color(0xFF4E8B97).withOpacity(0.7),
               ),
               onPressed: () =>
                   setState(() => _obscurePassword = !_obscurePassword),

@@ -18,7 +18,7 @@ class AppStrings {
   static const String passwordHint = 'Enter your password';
   static const String loginButton = 'Sign In';
   static const String welcomeBack = 'Welcome Back!';
-  static const String ebirth = 'E-birth'; 
+  static const String ebirth = 'E-birth';
   static const String registerSubtitle =
       'Fill the details to create an account';
   static const String alreadyHaveAccount = 'Already have an account? ';
@@ -27,8 +27,8 @@ class AppStrings {
   static const String forgotPasswordTitle = 'Forgot Password';
   static const String forgotPasswordSubtitle =
       'Enter your email to reset your password';
-  static const String sendResetLink = 'Send Reset Link';
-  static const String resetLinkSent = 'Reset link sent to your email!';
+  static const String sendResetLink = 'Send Verification Code';
+  static const String resetLinkSent = 'Verification code sent to your email!';
   static const String otpTitle = 'Verification Code';
   static const String otpSubtitle = 'Enter the 4-digit code sent to ';
   static const String verify = 'Verify';
@@ -57,4 +57,3 @@ class AppStrings {
   static const String unknownError = 'Something went wrong.';
   static const String invalidCredentials = 'Invalid email or password.';
 }
-

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/custom_gradient_button.dart';
+import 'package:ebirth/core/widgets/custom_text_field.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_state.dart';
 
@@ -187,24 +189,22 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
 
           // ── Section: Personal Info ─────────────────────────────
-          _buildSectionTitle('البيانات الشخصية'),
-
-          TextFormField(
+          CustomTextField(
+            label: l10n.name,
             controller: _nameController,
             textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: l10n.name,
-              prefixIcon: const Icon(
-                Icons.person_outline,
-                color: AppColors.primary,
-              ),
+            hintText: l10n.name,
+            prefixIcon: const Icon(
+              Icons.person_outline,
+              color: Color(0xFF4E8B97),
             ),
             validator: (v) =>
                 (v == null || v.trim().isEmpty) ? l10n.nameRequired : null,
           ),
           const SizedBox(height: 12),
 
-          TextFormField(
+          CustomTextField(
+            label: l10n.nationalId,
             controller: _nationalIdController,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
@@ -213,12 +213,10 @@ class _RegisterFormState extends State<RegisterForm> {
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(14),
             ],
-            decoration: InputDecoration(
-              labelText: l10n.nationalId,
-              prefixIcon: const Icon(
-                Icons.badge_outlined,
-                color: AppColors.primary,
-              ),
+            hintText: l10n.nationalId,
+            prefixIcon: const Icon(
+              Icons.badge_outlined,
+              color: Color(0xFF4E8B97),
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.nationalIdRequired;
@@ -228,29 +226,26 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 12),
 
-          // Birth Date picker
           GestureDetector(
             onTap: _pickBirthDate,
             child: AbsorbPointer(
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'تاريخ الميلاد',
-                  hintText: _birthDate == null
-                      ? 'اختر تاريخ الميلاد'
-                      : '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}',
-                  prefixIcon: const Icon(
-                    Icons.calendar_today_outlined,
-                    color: AppColors.primary,
-                  ),
-                  suffixIcon: const Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
+              child: CustomTextField(
+                label: 'تاريخ الميلاد',
                 controller: TextEditingController(
                   text: _birthDate == null
                       ? ''
                       : '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}',
+                ),
+                hintText: _birthDate == null
+                    ? 'اختر تاريخ الميلاد'
+                    : '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}',
+                prefixIcon: const Icon(
+                  Icons.calendar_today_outlined,
+                  color: Color(0xFF4E8B97),
+                ),
+                suffixIcon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Color(0xFF4E8B97),
                 ),
               ),
             ),
@@ -258,100 +253,140 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 12),
 
           // Gender
-          DropdownButtonFormField<int>(
-            value: _gender,
-            decoration: const InputDecoration(
-              labelText: 'النوع',
-              prefixIcon: Icon(Icons.wc_outlined, color: AppColors.primary),
-            ),
-            items: const [
-              DropdownMenuItem(value: 1, child: Text('ذكر')),
-              DropdownMenuItem(value: 2, child: Text('أنثى')),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'النوع',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  height: 20 / 14,
+                  color: Color(0xFF333333),
+                ),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int>(
+                value: _gender,
+                decoration: const InputDecoration(
+                  hintText: 'النوع',
+                  prefixIcon: Icon(Icons.wc_outlined, color: Color(0xFF4E8B97)),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 1, child: Text('ذكر')),
+                  DropdownMenuItem(value: 2, child: Text('أنثى')),
+                ],
+                onChanged: (v) => setState(() => _gender = v!),
+              ),
             ],
-            onChanged: (v) => setState(() => _gender = v!),
           ),
           const SizedBox(height: 12),
 
           // Blood Type
-          DropdownButtonFormField<int>(
-            value: _bloodType,
-            decoration: const InputDecoration(
-              labelText: 'فصيلة الدم',
-              prefixIcon: Icon(
-                Icons.bloodtype_outlined,
-                color: AppColors.primary,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'فصيلة الدم',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  height: 20 / 14,
+                  color: Color(0xFF333333),
+                ),
               ),
-            ),
-            items: List.generate(
-              _bloodTypes.length,
-              (i) =>
-                  DropdownMenuItem(value: i + 1, child: Text(_bloodTypes[i])),
-            ),
-            onChanged: (v) => setState(() => _bloodType = v!),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int>(
+                value: _bloodType,
+                decoration: const InputDecoration(
+                  hintText: 'فصيلة الدم',
+                  prefixIcon: Icon(
+                    Icons.bloodtype_outlined,
+                    color: Color(0xFF4E8B97),
+                  ),
+                ),
+                items: List.generate(
+                  _bloodTypes.length,
+                  (i) => DropdownMenuItem(
+                    value: i + 1,
+                    child: Text(_bloodTypes[i]),
+                  ),
+                ),
+                onChanged: (v) => setState(() => _bloodType = v!),
+              ),
+            ],
           ),
 
           // ── Section: Location ──────────────────────────────────
-          _buildSectionTitle('العنوان'),
-
-          // Governorate Dropdown
-          DropdownButtonFormField<int>(
-            value: _governorate,
-            decoration: const InputDecoration(
-              labelText: 'المحافظة',
-              prefixIcon: Icon(
-                Icons.location_city_outlined,
-                color: AppColors.primary,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'المحافظة',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  height: 20 / 14,
+                  color: Color(0xFF333333),
+                ),
               ),
-            ),
-            items: List.generate(
-              _governorates.length,
-              (i) =>
-                  DropdownMenuItem(value: i + 1, child: Text(_governorates[i])),
-            ),
-            onChanged: (v) => setState(() => _governorate = v!),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int>(
+                value: _governorate,
+                decoration: const InputDecoration(
+                  hintText: 'المحافظة',
+                  prefixIcon: Icon(
+                    Icons.location_city_outlined,
+                    color: Color(0xFF4E8B97),
+                  ),
+                ),
+                items: List.generate(
+                  _governorates.length,
+                  (i) => DropdownMenuItem(
+                    value: i + 1,
+                    child: Text(_governorates[i]),
+                  ),
+                ),
+                onChanged: (v) => setState(() => _governorate = v!),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
 
-          TextFormField(
+          CustomTextField(
+            label: 'المدينة / المركز',
             controller: _cityController,
             textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: 'المدينة / المركز',
-              prefixIcon: const Icon(
-                Icons.map_outlined,
-                color: AppColors.primary,
-              ),
+            hintText: 'المدينة / المركز',
+            prefixIcon: const Icon(
+              Icons.map_outlined,
+              color: Color(0xFF4E8B97),
             ),
           ),
           const SizedBox(height: 12),
 
-          TextFormField(
+          CustomTextField(
+            label: 'القرية / الحي',
             controller: _villageController,
             textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: 'القرية / الحي',
-              prefixIcon: const Icon(
-                Icons.home_outlined,
-                color: AppColors.primary,
-              ),
+            hintText: 'القرية / الحي',
+            prefixIcon: const Icon(
+              Icons.home_outlined,
+              color: Color(0xFF4E8B97),
             ),
           ),
 
           // ── Section: Contact ───────────────────────────────────
-          _buildSectionTitle('بيانات التواصل'),
-
-          TextFormField(
+          CustomTextField(
+            label: l10n.email,
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             textDirection: TextDirection.ltr,
-            decoration: InputDecoration(
-              labelText: l10n.email,
-              hintText: l10n.emailHint,
-              prefixIcon: const Icon(
-                Icons.email_outlined,
-                color: AppColors.primary,
-              ),
+            hintText: l10n.emailHint,
+            prefixIcon: const Icon(
+              Icons.email_outlined,
+              color: Color(0xFF4E8B97),
             ),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return l10n.emailRequired;
@@ -362,46 +397,42 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 12),
 
-          TextFormField(
+          CustomTextField(
+            label: l10n.phoneNumber,
             controller: _phoneController,
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
             textDirection: TextDirection.ltr,
-            decoration: InputDecoration(
-              labelText: l10n.phoneNumber,
-              prefixIcon: const Icon(
-                Icons.phone_outlined,
-                color: AppColors.primary,
-              ),
+            hintText: l10n.phoneNumber,
+            prefixIcon: const Icon(
+              Icons.phone_outlined,
+              color: Color(0xFF4E8B97),
             ),
             validator: (v) =>
                 (v == null || v.trim().isEmpty) ? l10n.phoneRequired : null,
           ),
 
           // ── Section: Security ──────────────────────────────────
-          _buildSectionTitle('كلمة المرور'),
-
-          TextFormField(
+          CustomTextField(
+            label: l10n.password,
             controller: _passwordController,
             obscureText: _obscurePassword,
             textInputAction: TextInputAction.next,
             textDirection: TextDirection.ltr,
-            decoration: InputDecoration(
-              labelText: l10n.password,
-              prefixIcon: const Icon(
-                Icons.lock_outlined,
-                color: AppColors.primary,
+            hintText: l10n.password,
+            prefixIcon: const Icon(
+              Icons.lock_outlined,
+              color: Color(0xFF4E8B97),
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: const Color(0xFF4E8B97).withOpacity(0.7),
               ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _obscurePassword
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
-                  color: AppColors.textSecondary,
-                ),
-                onPressed: () =>
-                    setState(() => _obscurePassword = !_obscurePassword),
-              ),
+              onPressed: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.passwordRequired;
@@ -411,28 +442,27 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 12),
 
-          TextFormField(
+          CustomTextField(
+            label: l10n.confirmPassword,
             controller: _confirmPasswordController,
             obscureText: _obscureConfirmPassword,
             textInputAction: TextInputAction.done,
             textDirection: TextDirection.ltr,
             onFieldSubmitted: (_) => _onSubmit(),
-            decoration: InputDecoration(
-              labelText: l10n.confirmPassword,
-              prefixIcon: const Icon(
-                Icons.lock_clock_outlined,
-                color: AppColors.primary,
+            hintText: l10n.confirmPassword,
+            prefixIcon: const Icon(
+              Icons.lock_clock_outlined,
+              color: Color(0xFF4E8B97),
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscureConfirmPassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: const Color(0xFF4E8B97).withOpacity(0.7),
               ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _obscureConfirmPassword
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
-                  color: AppColors.textSecondary,
-                ),
-                onPressed: () => setState(
-                  () => _obscureConfirmPassword = !_obscureConfirmPassword,
-                ),
+              onPressed: () => setState(
+                () => _obscureConfirmPassword = !_obscureConfirmPassword,
               ),
             ),
             validator: (v) =>
@@ -444,18 +474,10 @@ class _RegisterFormState extends State<RegisterForm> {
           BlocBuilder<RegisterCubit, RegisterState>(
             builder: (context, state) {
               final isLoading = state is RegisterLoading;
-              return ElevatedButton(
-                onPressed: isLoading ? null : _onSubmit,
-                child: isLoading
-                    ? const SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
-                        ),
-                      )
-                    : Text(l10n.register),
+              return CustomGradientButton(
+                text: l10n.register,
+                isLoading: isLoading,
+                onPressed: _onSubmit,
               );
             },
           ),
