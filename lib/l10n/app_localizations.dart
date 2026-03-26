@@ -127,7 +127,7 @@ abstract class AppLocalizations {
   /// No description provided for @nationalId.
   ///
   /// In ar, this message translates to:
-  /// **'الالرقم القومي'**
+  /// **'الرقم القومي'**
   String get nationalId;
 
   /// No description provided for @phoneNumber.

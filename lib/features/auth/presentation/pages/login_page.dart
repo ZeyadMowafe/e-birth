@@ -33,7 +33,11 @@ class _LoginView extends StatelessWidget {
       listener: (context, state) {
         if (state is LoginSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          context.goNamed('home', extra: state.user);
+          if (state.user.role.toLowerCase() == 'doctor') {
+            context.goNamed('login-role-choice', extra: state.user);
+          } else {
+            context.goNamed('home', extra: state.user);
+          }
         } else if (state is LoginFailure) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(

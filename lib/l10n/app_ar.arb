@@ -5,7 +5,7 @@
   "logout": "تسجيل الخروج",
   "register": "إنشاء حساب",
   "name": "الاسم بالكامل",
-  "nationalId": "الالرقم القومي",
+  "nationalId": "الرقم القومي",
   "phoneNumber": "رقم الهاتف",
   "confirmPassword": "تأكيد كلمة المرور",
   "email": "البريد الإلكتروني",

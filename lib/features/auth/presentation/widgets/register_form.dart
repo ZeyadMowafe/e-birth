@@ -125,19 +125,19 @@ class _RegisterFormState extends State<RegisterForm> {
     }
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 8),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: AppColors.primary,
-        ),
-      ),
-    );
-  }
+  // Widget _buildSectionTitle(String title) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 16, bottom: 8),
+  //     child: Text(
+  //       title,
+  //       style: const TextStyle(
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w600,
+  //         color: AppColors.primary,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +192,9 @@ class _RegisterFormState extends State<RegisterForm> {
           CustomTextField(
             label: l10n.name,
             controller: _nameController,
+            keyboardType: TextInputType.name,
             textInputAction: TextInputAction.next,
+            textAlign: TextAlign.right,
             hintText: l10n.name,
             prefixIcon: const Icon(
               Icons.person_outline,
@@ -357,6 +359,7 @@ class _RegisterFormState extends State<RegisterForm> {
             label: 'المدينة / المركز',
             controller: _cityController,
             textInputAction: TextInputAction.next,
+            textAlign: TextAlign.right,
             hintText: 'المدينة / المركز',
             prefixIcon: const Icon(
               Icons.map_outlined,
@@ -369,6 +372,7 @@ class _RegisterFormState extends State<RegisterForm> {
             label: 'القرية / الحي',
             controller: _villageController,
             textInputAction: TextInputAction.next,
+            textAlign: TextAlign.right,
             hintText: 'القرية / الحي',
             prefixIcon: const Icon(
               Icons.home_outlined,

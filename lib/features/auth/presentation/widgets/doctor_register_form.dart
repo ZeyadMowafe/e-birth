@@ -225,7 +225,9 @@ class _DoctorRegisterFormState extends State<DoctorRegisterForm> {
           CustomTextField(
             label: l10n.name,
             controller: _nameController,
+            keyboardType: TextInputType.name,
             textInputAction: TextInputAction.next,
+            textAlign: TextAlign.right,
             hintText: l10n.name,
             prefixIcon: const Icon(
               Icons.person_outline,
@@ -383,6 +385,7 @@ class _DoctorRegisterFormState extends State<DoctorRegisterForm> {
             label: 'المدينة / المركز',
             controller: _cityController,
             textInputAction: TextInputAction.next,
+            textAlign: TextAlign.right,
             hintText: 'المدينة / المركز',
             prefixIcon: const Icon(
               Icons.map_outlined,
@@ -394,6 +397,7 @@ class _DoctorRegisterFormState extends State<DoctorRegisterForm> {
             label: 'القرية / الحي',
             controller: _villageController,
             textInputAction: TextInputAction.next,
+            textAlign: TextAlign.right,
             hintText: 'القرية / الحي',
             prefixIcon: const Icon(
               Icons.home_outlined,

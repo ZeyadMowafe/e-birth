@@ -22,6 +22,18 @@ import 'package:ebirth/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/verify_otp_cubit.dart';
 
+// ─── Parent Feature Imports ──────────────────────────────────────────────
+import 'package:ebirth/features/parent/data/datasources/parent_remote_data_source.dart';
+import 'package:ebirth/features/parent/data/datasources/parent_remote_data_source_impl.dart';
+import 'package:ebirth/features/parent/data/repositories/parent_repository_impl.dart';
+import 'package:ebirth/features/parent/domain/repositories/parent_repository.dart';
+import 'package:ebirth/features/parent/domain/usecases/get_parent_with_children.dart';
+import 'package:ebirth/features/parent/domain/usecases/get_child_details.dart';
+import 'package:ebirth/features/parent/domain/usecases/get_child_vaccinations.dart';
+import 'package:ebirth/features/parent/domain/usecases/get_child_medical_history.dart';
+import 'package:ebirth/features/parent/presentation/cubit/parent_cubit.dart';
+import 'package:ebirth/features/parent/presentation/cubit/child_details_cubit.dart';
+
 /// Global service locator instance.
 final GetIt sl = GetIt.instance;
 
@@ -96,4 +108,35 @@ Future<void> initDependencies() async {
   sl.registerFactory<ResetPasswordCubit>(
     () => ResetPasswordCubit(resetPasswordUseCase: sl()),
   );
+
+  // ─── Parent Feature ──────────────────────────────────────────────────────
+
+  // Data Sources
+  sl.registerLazySingleton<ParentRemoteDataSource>(
+    () => ParentRemoteDataSourceImpl(dio: sl()),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<ParentRepository>(
+    () => ParentRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetParentWithChildrenUseCase(sl()));
+  sl.registerLazySingleton(() => GetChildDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => GetChildVaccinationsUseCase(sl()));
+  sl.registerLazySingleton(() => GetChildMedicalHistoryUseCase(sl()));
+
+  // Cubits
+  sl.registerFactory<ParentCubit>(
+    () => ParentCubit(getParentWithChildrenUseCase: sl()),
+  );
+  sl.registerFactory<ChildDetailsCubit>(
+    () => ChildDetailsCubit(
+      getChildDetailsUseCase: sl(),
+      getChildVaccinationsUseCase: sl(),
+      getChildMedicalHistoryUseCase: sl(),
+    ),
+  );
 }
+

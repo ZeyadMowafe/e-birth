@@ -14,6 +14,8 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
   final String? label;
+  final TextAlign textAlign;
+  final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
@@ -29,10 +31,14 @@ class CustomTextField extends StatelessWidget {
     this.validator,
     this.inputFormatters,
     this.label,
+    this.textAlign = TextAlign.start,
+    this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveFocusNode = focusNode ?? FocusNode();
+
     Widget field = Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -47,16 +53,18 @@ class CustomTextField extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
+        focusNode: effectiveFocusNode,
         obscureText: obscureText,
         keyboardType: keyboardType,
         textInputAction: textInputAction,
         textDirection: textDirection,
+        textAlign: textAlign,
         onFieldSubmitted: onFieldSubmitted,
         validator: validator,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: const TextStyle(fontFamily: 'Arial'),
+          hintStyle: const TextStyle(), // Use default theme font
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           border: OutlineInputBorder(
@@ -87,8 +95,9 @@ class CustomTextField extends StatelessWidget {
       ),
     );
 
+    Widget content;
     if (label != null) {
-      return Column(
+      content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -104,8 +113,18 @@ class CustomTextField extends StatelessWidget {
           field,
         ],
       );
+    } else {
+      content = field;
     }
 
-    return field;
+    return GestureDetector(
+      onTap: () {
+        if (!effectiveFocusNode.hasFocus) {
+          effectiveFocusNode.requestFocus();
+        }
+      },
+      behavior: HitTestBehavior.opaque,
+      child: content,
+    );
   }
 }

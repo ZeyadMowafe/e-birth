@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:ebirth/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/login_page.dart';
+import 'package:ebirth/features/auth/presentation/pages/login_role_choice_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/pending_approval_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/password_reset_success_page.dart';
 import 'package:ebirth/features/auth/presentation/pages/register_page.dart';
@@ -11,6 +12,8 @@ import 'package:ebirth/features/auth/presentation/pages/verify_otp_page.dart';
 import 'package:ebirth/features/home/presentation/pages/home_page.dart';
 import 'package:ebirth/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:ebirth/features/splash/presentation/pages/splash_page.dart';
+import 'package:ebirth/features/parent/presentation/pages/child_details_page.dart';
+import 'package:ebirth/features/parent/domain/entities/child_entity.dart';
 
 class AppRouter {
   AppRouter._();
@@ -71,6 +74,14 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: '/login-role-choice',
+        name: 'login-role-choice',
+        builder: (context, state) {
+          final user = state.extra as UserEntity;
+          return LoginRoleChoicePage(user: user);
+        },
+      ),
+      GoRoute(
         path: homeRoute,
         name: 'home',
         builder: (context, state) {
@@ -91,6 +102,18 @@ class AppRouter {
         path: '/reset-password-success',
         name: 'reset-password-success',
         builder: (context, state) => const PasswordResetSuccessPage(),
+      ),
+      GoRoute(
+        path: '/child-details/:id',
+        name: 'child-details',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          final initialChild = state.extra as ChildEntity?;
+          return ChildDetailsPage(
+            childId: id,
+            initialChild: initialChild,
+          );
+        },
       ),
     ],
   );

@@ -24,7 +24,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get name => 'الاسم بالكامل';
 
   @override
-  String get nationalId => 'الالرقم القومي';
+  String get nationalId => 'الرقم القومي';
 
   @override
   String get phoneNumber => 'رقم الهاتف';

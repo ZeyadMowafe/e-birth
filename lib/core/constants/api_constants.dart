@@ -10,6 +10,12 @@ class ApiConstants {
   static const String verifyOtp = '/Auth/IsvalidOtp';
   static const String resetPassword = '/Auth/ResetPassword';
 
+  // ─── Parent Endpoints ─────────────────────────────────────────────────────
+  static const String getParentWithChildren = '/Parent/GetParentWithChilderen';
+  static const String getChildDetails = '/Parent/GetChildDetailsAsync';
+  static const String getChildVaccinations = '/Parent/GetChildVaccinationsAsync';
+  static const String getChildMedicalHistory = '/Parent/GetChildMedicalHistoryAsync';
+
   // ─── Timings ──────────────────────────────────────────────────────────────
   static const Duration connectTimeout = Duration(seconds: 15);
   static const Duration receiveTimeout = Duration(seconds: 15);
