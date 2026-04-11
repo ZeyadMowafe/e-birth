@@ -9,6 +9,7 @@ import 'package:ebirth/l10n/app_localizations.dart';
 import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/core/widgets/custom_text_field.dart';
 import 'package:ebirth/core/widgets/custom_gradient_button.dart';
+import 'package:animate_do/animate_do.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({super.key});
@@ -104,39 +105,46 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 24),
-                  CustomTextField(
-                    label: 'البريد الإلكتروني   ',
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.done,
-                    textDirection: TextDirection.ltr,
-                    hintText: 'أدخل البريد الإلكتروني',
-                    prefixIcon: const Icon(
-                      Icons.person_outline,
-                      color: Color(0xFF4E8B97),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'البريد الإلكتروني أو الرقم القومي مطلوب';
-                      }
-                      final val = value.trim();
-                      final emailRegex = RegExp(
-                        r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
-                      );
-                      final idRegex = RegExp(r'^\d{14}$');
+                  FadeInLeft(
+                    duration: const Duration(milliseconds: 600),
+                    child: CustomTextField(
+                      label: 'البريد الإلكتروني   ',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.done,
+                      textDirection: TextDirection.ltr,
+                      hintText: 'أدخل البريد الإلكتروني',
+                      prefixIcon: const Icon(
+                        Icons.person_outline,
+                        color: Color(0xFF4E8B97),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'البريد الإلكتروني أو الرقم القومي مطلوب';
+                        }
+                        final val = value.trim();
+                        final emailRegex = RegExp(
+                          r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        );
+                        final idRegex = RegExp(r'^\d{14}$');
 
-                      if (!emailRegex.hasMatch(val)) {
-                        return 'يرجى إدخال بريد إلكتروني صحيح';
-                      }
-                      return null;
-                    },
-                    onFieldSubmitted: (_) => _onSendLink(),
+                        if (!emailRegex.hasMatch(val)) {
+                          return 'يرجى إدخال بريد إلكتروني صحيح';
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) => _onSendLink(),
+                    ),
                   ),
                   const SizedBox(height: 32),
-                  CustomGradientButton(
-                    text: l10n.sendResetLink,
-                    isLoading: state is ForgotPasswordLoading,
-                    onPressed: _onSendLink,
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 600),
+                    delay: const Duration(milliseconds: 300),
+                    child: CustomGradientButton(
+                      text: l10n.sendResetLink,
+                      isLoading: state is ForgotPasswordLoading,
+                      onPressed: _onSendLink,
+                    ),
                   ),
                   const SizedBox(height: 24),
                 ],

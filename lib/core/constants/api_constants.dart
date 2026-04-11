@@ -12,9 +12,13 @@ class ApiConstants {
 
   // ─── Parent Endpoints ─────────────────────────────────────────────────────
   static const String getParentWithChildren = '/Parent/GetParentWithChilderen';
+  static const String getParentDetails = '/Parent/GetParentDetailsAsync';
   static const String getChildDetails = '/Parent/GetChildDetailsAsync';
   static const String getChildVaccinations = '/Parent/GetChildVaccinationsAsync';
   static const String getChildMedicalHistory = '/Parent/GetChildMedicalHistoryAsync';
+  static const String getParentMedicalHistory = '/Parent/GetParentMedicalHistoryAsync';
+  static const String getSpecificChildMedicalHistory = '/Parent/GetSpecificChildMedicalHistoryAsync';
+  static const String getSpecificParentMedicalHistory = '/Parent/GetSpecificParentMedicalHistoryAsync';
 
   // ─── Timings ──────────────────────────────────────────────────────────────
   static const Duration connectTimeout = Duration(seconds: 15);

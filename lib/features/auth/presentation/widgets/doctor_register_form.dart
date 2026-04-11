@@ -9,6 +9,7 @@ import 'package:ebirth/core/widgets/custom_gradient_button.dart';
 import 'package:ebirth/core/widgets/custom_text_field.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_state.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 // ─── Egyptian Governorates ─────────────────────────────────────────────────
 const _governorates = [
@@ -177,9 +178,16 @@ class _DoctorRegisterFormState extends State<DoctorRegisterForm> {
     final l10n = AppLocalizations.of(context)!;
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+      child: AnimationLimiter(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 600),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              horizontalOffset: 50.0,
+              child: FadeInAnimation(child: widget),
+            ),
+            children: [
           // ── Inline Error Banner ────────────────────────────────
           BlocBuilder<RegisterCubit, RegisterState>(
             builder: (context, state) {
@@ -616,7 +624,9 @@ class _DoctorRegisterFormState extends State<DoctorRegisterForm> {
               );
             },
           ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }

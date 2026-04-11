@@ -9,6 +9,7 @@ import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/core/widgets/tap_unfocus.dart';
 import 'package:ebirth/features/auth/presentation/widgets/login_form.dart';
 import 'package:ebirth/l10n/app_localizations.dart';
+import 'package:animate_do/animate_do.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -77,28 +78,32 @@ class _LoginView extends StatelessWidget {
 
                 const SizedBox(height: 48), // Space before the register link
                 // ── Footer Register Link ──────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'ليس لديك حساب؟', // l10n.dontHaveAccount
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 14,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => context.pushNamed('role-selection'),
-                      child: const Text(
-                        'سجل الأن', // l10n.signUpNow
+                FadeIn(
+                  duration: const Duration(milliseconds: 800),
+                  delay: const Duration(milliseconds: 400),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'ليس لديك حساب؟', // l10n.dontHaveAccount
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                          color: AppColors.textSecondary,
                           fontSize: 14,
                         ),
                       ),
-                    ),
-                  ],
+                      TextButton(
+                        onPressed: () => context.pushNamed('role-selection'),
+                        child: const Text(
+                          'سجل الأن', // l10n.signUpNow
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
               ],

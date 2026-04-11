@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/core/widgets/tap_unfocus.dart';
 import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
+import 'package:ebirth/core/helper/auth_token_holder.dart';
+import 'package:ebirth/core/helper/shared_prefs_helper.dart';
 import '../../../../features/parent/presentation/pages/parent_dashboard_view.dart';
 
 class HomePage extends StatelessWidget {
@@ -19,110 +21,234 @@ class HomePage extends StatelessWidget {
     return TapUnfocus(
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: Column(
-          children: [
-            // ── Custom Header ─────────────────────────────────────
-            Container(
-              width: screenWidth,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x0D000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          toolbarHeight: 80,
+          titleSpacing: 20,
+          title: Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFFF9FAFB),
+                  border: Border.all(color: const Color(0xFFF3F4F6)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/images/splash_logo.png',
+                    fit: BoxFit.contain,
                   ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'E-Birth',
+                    style: GoogleFonts.manuale(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 20,
+                      letterSpacing: -0.5,
+                      color: const Color(0xFF111818),
+                    ),
+                  ),
+                  if (displayName.isNotEmpty)
+                    Text(
+                      'أهلاً بك، $displayName',
+                      style: GoogleFonts.readexPro(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        color: const Color(0xFF3A8F8E),
+                      ),
+                    ),
                 ],
               ),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Left: Brand & User Info
-                      Row(
-                        children: [
-                          // Logo Box
-                          Container(
-                            width: 70,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: const Color(0xFFF9FAFB),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.asset(
-                                'assets/images/splash_logo.png',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'E-Birth',
-                                style: GoogleFonts.manuale(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 18,
-                                  height: 1.2,
-                                  letterSpacing: -0.45,
-                                  color: const Color(0xFF111818),
-                                ),
-                              ),
-                              if (displayName.isNotEmpty)
-                                Text(
-                                  displayName,
-                                  style: const TextStyle(
-                                    fontFamily: 'Arial',
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 11,
-                                    height: 1.2,
-                                    color: Color(0xFF3A8F8E),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      // Right: Logout Button
-                      GestureDetector(
-                        onTap: () => context.goNamed('login'),
-                        child: Container(
-                          width: 34,
-                          height: 34,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFE5E5),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Center(
-                            child: Transform.rotate(
-                              angle: math.pi,
-                              child: const Icon(
-                                Icons.logout,
-                                color: Color(0xFFE7000B),
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+            ],
+          ),
+          actions: [
+            Builder(
+              builder: (ctx) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: InkWell(
+                  onTap: () => Scaffold.of(ctx).openEndDrawer(),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF9FAFB),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                    ),
+                    child: const Icon(
+                      Icons.settings_outlined,
+                      color: Color(0xFF4B5563),
+                      size: 24,
+                    ),
                   ),
                 ),
               ),
             ),
-
-            // ── Body Content ──────────────────────────────────────
+          ],
+        ),
+        endDrawer: Drawer(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              bottomLeft: Radius.circular(24),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Drawer Header
+              Container(
+                padding: const EdgeInsets.only(top: 60, bottom: 24, left: 24, right: 24),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFFDBEAFE), Color(0xFFC6F6D5)],
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x1A000000),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.person, size: 32, color: Color(0xFF3A8F8E)),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName.isNotEmpty ? displayName : 'مستخدم التطبيق',
+                            style: GoogleFonts.readexPro(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF1F2937),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'حساب ولي أمر',
+                            style: GoogleFonts.readexPro(
+                              fontSize: 12,
+                              color: const Color(0xFF4B5563),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              
+              // Settings Options
+              _buildDrawerItem(
+                icon: Icons.person_outline,
+                title: 'الملف الشخصي',
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context.pushNamed('profile', extra: user);
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.history_edu_outlined,
+                title: 'تاريخي الطبي',
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context.pushNamed('parent-medical-history', extra: user);
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.notifications_none_outlined,
+                title: 'الإشعارات',
+                onTap: () {
+                  Navigator.of(context).pop();
+                  // TODO: Navigate to notifications
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.language_outlined,
+                title: 'اللغة (العربية)',
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.help_outline,
+                title: 'المساعدة والدعم',
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              
+              const Spacer(),
+              const Divider(height: 1, color: Color(0xFFF3F4F6)),
+              
+              // Logout Option
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: InkWell(
+                  onTap: () async {
+                    AuthTokenHolder.clearToken();
+                    await SharedPrefsHelper.clearToken();
+                    if (context.mounted) context.goNamed('login');
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF2F2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.logout, color: Color(0xFFEF4444), size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          'تسجيل الخروج',
+                          style: GoogleFonts.readexPro(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFFEF4444),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+        body: Column(
+          children: [
             Expanded(
               child: Container(
                 width: screenWidth,
@@ -210,11 +336,15 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      const SizedBox(height: 24),
-                      // Dynamic Dashboard Content based on User Role or ID
+                      const SizedBox(height: 20),
+                      // ── Children Cards ─────────────────────────────────
                       if (user != null && user!.id.isNotEmpty)
-                        ParentDashboardView(parentId: user!.id)
+                        Center(
+                          child: SizedBox(
+                            width: 345,
+                            child: ParentDashboardView(parentId: user!.id),
+                          ),
+                        )
                       else
                         Center(
                           child: Text(
@@ -234,5 +364,35 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xFF6B7280), size: 24),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: GoogleFonts.readexPro(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF374151),
+              ),
+            ),
+            const Spacer(),
+            const Icon(Icons.arrow_forward_ios, size: 14, color: Color(0xFF9CA3AF)),
+          ],
+        ),
+      ),
+    );
+  }
 }
+
 

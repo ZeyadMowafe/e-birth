@@ -6,6 +6,8 @@ import 'package:ebirth/core/network/network_info.dart';
 import 'package:ebirth/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:ebirth/features/auth/domain/repositories/auth_repository.dart';
+import 'package:ebirth/core/helper/shared_prefs_helper.dart';
+import 'package:ebirth/core/helper/auth_token_holder.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -30,6 +32,10 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
       );
+      if (user.token.isNotEmpty) {
+        AuthTokenHolder.setToken(user.token); // In-memory (immediate)
+        await SharedPrefsHelper.setToken(user.token); // Persisted (next restart)
+      }
       return Right(user);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
@@ -72,6 +78,10 @@ class AuthRepositoryImpl implements AuthRepository {
         governorate: governorate,
         bloodType: bloodType,
       );
+      if (user.token.isNotEmpty) {
+        AuthTokenHolder.setToken(user.token);
+        await SharedPrefsHelper.setToken(user.token);
+      }
       return Right(user);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));

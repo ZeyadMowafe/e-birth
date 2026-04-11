@@ -6,6 +6,7 @@ import '../../domain/entities/parent_entity.dart';
 import '../../domain/entities/child_entity.dart';
 import '../../domain/entities/vaccination_entity.dart';
 import '../../domain/entities/medical_history_entity.dart';
+import '../../domain/entities/parent_details_entity.dart';
 import '../../domain/repositories/parent_repository.dart';
 import '../datasources/parent_remote_data_source.dart';
 
@@ -24,6 +25,20 @@ class ParentRepositoryImpl implements ParentRepository {
       try {
         final remoteParent = await remoteDataSource.getParentWithChildren(parentId);
         return Right(remoteParent);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message));
+      }
+    } else {
+      return Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ParentDetailsEntity>> getParentDetails(String parentId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final remoteParentDetails = await remoteDataSource.getParentDetails(parentId);
+        return Right(remoteParentDetails);
       } on ServerException catch (e) {
         return Left(ServerFailure(message: e.message));
       }
@@ -66,6 +81,48 @@ class ParentRepositoryImpl implements ParentRepository {
       try {
         final medicalHistory = await remoteDataSource.getChildMedicalHistory(childId);
         return Right(medicalHistory);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message));
+      }
+    } else {
+      return Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<MedicalHistoryEntity>>> getParentMedicalHistory(String parentId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final medicalHistory = await remoteDataSource.getParentMedicalHistory(parentId);
+        return Right(medicalHistory);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message));
+      }
+    } else {
+      return Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, MedicalHistoryEntity>> getSpecificChildMedicalHistory(String medicalRecordId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final entry = await remoteDataSource.getSpecificChildMedicalHistory(medicalRecordId);
+        return Right(entry);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message));
+      }
+    } else {
+      return Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, MedicalHistoryEntity>> getSpecificParentMedicalHistory(String medicalRecordId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final entry = await remoteDataSource.getSpecificParentMedicalHistory(medicalRecordId);
+        return Right(entry);
       } on ServerException catch (e) {
         return Left(ServerFailure(message: e.message));
       }

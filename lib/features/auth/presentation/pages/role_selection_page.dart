@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/core/widgets/auth_layout.dart';
+import 'package:animate_do/animate_do.dart';
 
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
@@ -37,61 +38,73 @@ class RoleSelectionPage extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ── Parent Card ────────────────────────────────────────
-            _RoleCard(
-              icon: Icons.person_outline,
-              title: 'ولي أمر',
-              subtitle: ' حساب للآباء والأمهات لمتابعة أطفالهم',
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFB8ECC8), Color(0xFF9DD9B4)],
+            FadeInUp(
+              duration: const Duration(milliseconds: 600),
+              delay: const Duration(milliseconds: 100),
+              child: _RoleCard(
+                icon: Icons.person_outline,
+                title: 'ولي أمر',
+                subtitle: ' حساب للآباء والأمهات لمتابعة أطفالهم',
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFB8ECC8), Color(0xFF9DD9B4)],
+                ),
+                iconColor: const Color(
+                  0xFF1DA8C4,
+                ), // Keeping it matching the theme, or user can specify later
+                onTap: () => context.pushNamed('register', extra: 'Parent'),
               ),
-              iconColor: const Color(
-                0xFF1DA8C4,
-              ), // Keeping it matching the theme, or user can specify later
-              onTap: () => context.pushNamed('register', extra: 'Parent'),
             ),
             const SizedBox(height: 16),
 
             // ── Doctor Card ────────────────────────────────────────
-            _RoleCard(
-              icon: Icons.monitor_heart_outlined,
-              title: 'طبيب',
-              subtitle: 'حساب للأطباء لإدارة السجلات الطبية',
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF1DA8C4), Color(0xFF16899F)],
+            FadeInUp(
+              duration: const Duration(milliseconds: 600),
+              delay: const Duration(milliseconds: 300),
+              child: _RoleCard(
+                icon: Icons.monitor_heart_outlined,
+                title: 'طبيب',
+                subtitle: 'حساب للأطباء لإدارة السجلات الطبية',
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF1DA8C4), Color(0xFF16899F)],
+                ),
+                textColor: Colors.white,
+                iconColor: const Color(0xFF1DA8C4),
+                onTap: () => context.pushNamed('register', extra: 'Doctor'),
               ),
-              textColor: Colors.white,
-              iconColor: const Color(0xFF1DA8C4),
-              onTap: () => context.pushNamed('register', extra: 'Doctor'),
             ),
             const SizedBox(height: 48),
 
             // ── Footer Login Link ──────────────────────────
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'لديك حساب بالفعل؟',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 14,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => context.pop(),
-                  child: const Text(
-                    'تسجيل الدخول',
+            FadeIn(
+              duration: const Duration(milliseconds: 800),
+              delay: const Duration(milliseconds: 500),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'لديك حساب بالفعل؟',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+                      color: AppColors.textSecondary,
                       fontSize: 14,
                     ),
                   ),
-                ),
-              ],
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text(
+                      'تسجيل الدخول',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
           ],

@@ -14,6 +14,12 @@ import 'package:ebirth/features/onboarding/presentation/pages/onboarding_page.da
 import 'package:ebirth/features/splash/presentation/pages/splash_page.dart';
 import 'package:ebirth/features/parent/presentation/pages/child_details_page.dart';
 import 'package:ebirth/features/parent/domain/entities/child_entity.dart';
+import 'package:ebirth/features/parent/presentation/pages/parent_profile_page.dart';
+import 'package:ebirth/features/parent/presentation/pages/parent_medical_history_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ebirth/core/di/injection_container.dart';
+import 'package:ebirth/features/parent/presentation/cubit/parent_profile_cubit.dart';
+import 'package:ebirth/features/parent/presentation/cubit/parent_medical_history_cubit.dart';
 
 class AppRouter {
   AppRouter._();
@@ -87,6 +93,40 @@ class AppRouter {
         builder: (context, state) {
           final user = state.extra as UserEntity?;
           return HomePage(user: user);
+        },
+      ),
+      GoRoute(
+        path: '/profile',
+        name: 'profile',
+        builder: (context, state) {
+          final user = state.extra as UserEntity?;
+          return BlocProvider<ParentProfileCubit>(
+            create: (context) {
+              final cubit = sl<ParentProfileCubit>();
+              if (user != null && user.id.isNotEmpty) {
+                cubit.fetchParentProfile(user.id);
+              }
+              return cubit;
+            },
+            child: ParentProfilePage(user: user),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/parent-medical-history',
+        name: 'parent-medical-history',
+        builder: (context, state) {
+          final user = state.extra as UserEntity?;
+          return BlocProvider<ParentMedicalHistoryCubit>(
+            create: (context) {
+              final cubit = sl<ParentMedicalHistoryCubit>();
+              if (user != null && user.id.isNotEmpty) {
+                cubit.fetchParentMedicalHistory(user.id);
+              }
+              return cubit;
+            },
+            child: const ParentMedicalHistoryPage(),
+          );
         },
       ),
       GoRoute(

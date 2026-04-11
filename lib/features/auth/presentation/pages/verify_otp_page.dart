@@ -13,6 +13,7 @@ import 'package:ebirth/features/auth/presentation/cubit/verify_otp_state.dart';
 import 'package:ebirth/l10n/app_localizations.dart';
 import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/core/widgets/custom_gradient_button.dart';
+import 'package:animate_do/animate_do.dart';
 
 class VerifyOtpPage extends StatelessWidget {
   final String emailOrNationalId;
@@ -178,9 +179,11 @@ class _VerifyOtpViewState extends State<_VerifyOtpView> {
                   const SizedBox(height: 24),
 
                   // OTP Input Fields
-                  Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: Row(
+                  FadeInDown(
+                    duration: const Duration(milliseconds: 600),
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
                         6,
@@ -237,51 +240,59 @@ class _VerifyOtpViewState extends State<_VerifyOtpView> {
                             },
                           ),
                         ),
+                        ),
                       ),
                     ),
                   ),
 
                   const SizedBox(height: 32),
 
-                  // Resend Code Section
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.didNotReceiveCode,
-                        style: GoogleFonts.arimo(
-                          color: const Color(0xFF4A5565),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          height: 20 / 14,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: _secondsRemaining > 0 ? null : _onResend,
-                        child: Text(
-                          _secondsRemaining > 0
-                              ? 'إعادة الإرسال خلال $_secondsRemaining ثانية'
-                              : l10n.resendCode,
+                  FadeIn(
+                    duration: const Duration(milliseconds: 800),
+                    delay: const Duration(milliseconds: 300),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.didNotReceiveCode,
                           style: GoogleFonts.arimo(
-                            color: _secondsRemaining > 0
-                                ? AppColors.textSecondary
-                                : const Color(0xFF1DA8C4),
+                            color: const Color(0xFF4A5565),
                             fontSize: 14,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w400,
                             height: 20 / 14,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: _secondsRemaining > 0 ? null : _onResend,
+                          child: Text(
+                            _secondsRemaining > 0
+                                ? 'إعادة الإرسال خلال $_secondsRemaining ثانية'
+                                : l10n.resendCode,
+                            style: GoogleFonts.arimo(
+                              color: _secondsRemaining > 0
+                                  ? AppColors.textSecondary
+                                  : const Color(0xFF1DA8C4),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              height: 20 / 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 16),
 
-                  CustomGradientButton(
-                    text: l10n.verify,
-                    isLoading: state is VerifyOtpLoading,
-                    onPressed: _onVerify,
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 600),
+                    delay: const Duration(milliseconds: 500),
+                    child: CustomGradientButton(
+                      text: l10n.verify,
+                      isLoading: state is VerifyOtpLoading,
+                      onPressed: _onVerify,
+                    ),
                   ),
                 ],
               ),

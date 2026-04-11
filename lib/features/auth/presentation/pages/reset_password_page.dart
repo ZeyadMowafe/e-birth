@@ -8,6 +8,7 @@ import 'package:ebirth/features/auth/presentation/cubit/reset_password_state.dar
 import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/core/widgets/custom_text_field.dart';
 import 'package:ebirth/core/widgets/custom_gradient_button.dart';
+import 'package:animate_do/animate_do.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   final String emailOrNationalId;
@@ -99,76 +100,87 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 24),
-                    CustomTextField(
-                      label: 'كلمة المرور الجديدة',
-                      controller: _newPasswordController,
-                      obscureText: _obscureNew,
-                      textInputAction: TextInputAction.next,
-                      textDirection: TextDirection.ltr,
-                      hintText: 'أدخل كلمة المرور الجديدة',
-                      prefixIcon: const Icon(
-                        Icons.lock_outline,
-                        color: Color(0xFF4E8B97),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureNew
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          color: const Color(0xFF4E8B97).withOpacity(0.7),
+                    FadeInLeft(
+                      duration: const Duration(milliseconds: 600),
+                      child: CustomTextField(
+                        label: 'كلمة المرور الجديدة',
+                        controller: _newPasswordController,
+                        obscureText: _obscureNew,
+                        textInputAction: TextInputAction.next,
+                        textDirection: TextDirection.ltr,
+                        hintText: 'أدخل كلمة المرور الجديدة',
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Color(0xFF4E8B97),
                         ),
-                        onPressed: () =>
-                            setState(() => _obscureNew = !_obscureNew),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureNew
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: const Color(0xFF4E8B97).withOpacity(0.7),
+                          ),
+                          onPressed: () =>
+                              setState(() => _obscureNew = !_obscureNew),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'كلمة المرور مطلوبة';
+                          }
+                          if (value.trim().length < 6) {
+                            return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'كلمة المرور مطلوبة';
-                        }
-                        if (value.trim().length < 6) {
-                          return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
-                    CustomTextField(
-                      label: 'تأكيد كلمة المرور',
-                      controller: _confirmPasswordController,
-                      obscureText: _obscureConfirm,
-                      textInputAction: TextInputAction.done,
-                      textDirection: TextDirection.ltr,
-                      hintText: 'أعد إدخال كلمة المرور الجديدة',
-                      prefixIcon: const Icon(
-                        Icons.lock_outline,
-                        color: Color(0xFF4E8B97),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureConfirm
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          color: const Color(0xFF4E8B97).withOpacity(0.7),
+                    FadeInLeft(
+                      duration: const Duration(milliseconds: 600),
+                      delay: const Duration(milliseconds: 200),
+                      child: CustomTextField(
+                        label: 'تأكيد كلمة المرور',
+                        controller: _confirmPasswordController,
+                        obscureText: _obscureConfirm,
+                        textInputAction: TextInputAction.done,
+                        textDirection: TextDirection.ltr,
+                        hintText: 'أعد إدخال كلمة المرور الجديدة',
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Color(0xFF4E8B97),
                         ),
-                        onPressed: () =>
-                            setState(() => _obscureConfirm = !_obscureConfirm),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureConfirm
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: const Color(0xFF4E8B97).withOpacity(0.7),
+                          ),
+                          onPressed: () =>
+                              setState(() => _obscureConfirm = !_obscureConfirm),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'تأكيد كلمة المرور مطلوب';
+                          }
+                          if (value.trim() !=
+                              _newPasswordController.text.trim()) {
+                            return 'كلمتا المرور غير متطابقتين';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (_) => _onSubmit(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'تأكيد كلمة المرور مطلوب';
-                        }
-                        if (value.trim() !=
-                            _newPasswordController.text.trim()) {
-                          return 'كلمتا المرور غير متطابقتين';
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) => _onSubmit(),
                     ),
                     const SizedBox(height: 32),
-                    CustomGradientButton(
-                      text: 'تغيير كلمة المرور',
-                      isLoading: state is ResetPasswordLoading,
-                      onPressed: _onSubmit,
+                    FadeInUp(
+                      duration: const Duration(milliseconds: 600),
+                      delay: const Duration(milliseconds: 400),
+                      child: CustomGradientButton(
+                        text: 'تغيير كلمة المرور',
+                        isLoading: state is ResetPasswordLoading,
+                        onPressed: _onSubmit,
+                      ),
                     ),
                     const SizedBox(height: 24),
                   ],
