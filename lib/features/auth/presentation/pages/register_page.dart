@@ -35,6 +35,7 @@ class _RegisterView extends StatelessWidget {
     return BlocListener<RegisterCubit, RegisterState>(
       listener: (context, state) {
         if (state is RegisterSuccess) {
+          debugPrint('User Role (Register): ${state.user.role}');
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           if (isDoctor) {
             // Doctor → show pending approval

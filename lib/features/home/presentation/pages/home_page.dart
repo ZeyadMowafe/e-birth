@@ -8,6 +8,8 @@ import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:ebirth/core/helper/auth_token_holder.dart';
 import 'package:ebirth/core/helper/shared_prefs_helper.dart';
 import '../../../../features/parent/presentation/pages/parent_dashboard_view.dart';
+import '../widgets/doctor_dashboard_view.dart';
+import 'package:animate_do/animate_do.dart';
 
 class HomePage extends StatelessWidget {
   final UserEntity? user;
@@ -152,7 +154,9 @@ class HomePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'حساب ولي أمر',
+                            user?.role.toLowerCase().contains('doctor') == true
+                                ? 'حساب طبيب'
+                                : 'حساب ولي أمر',
                             style: GoogleFonts.readexPro(
                               fontSize: 12,
                               color: const Color(0xFF4B5563),
@@ -278,10 +282,12 @@ class HomePage extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6),
-                            gradient: const LinearGradient(
+                            gradient: LinearGradient(
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
-                              colors: [Color(0xFF4EBCBA), Color(0xFF3A8F8E)],
+                              colors: user?.role.toLowerCase().contains('doctor') == true
+                                  ? [const Color(0xFF427D8D), const Color(0xFF4E8B97)]
+                                  : [const Color(0xFF4EBCBA), const Color(0xFF3A8F8E)],
                             ),
                             boxShadow: const [
                               BoxShadow(
@@ -306,29 +312,35 @@ class HomePage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'مرحبا بك',
-                                    style: GoogleFonts.readexPro(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      height: 1.1,
+                                    Text(
+                                      user?.role.toLowerCase().contains('doctor') == true
+                                          ? 'أهلاً دكتور'
+                                          : 'مرحبا بك',
+                                      style: GoogleFonts.readexPro(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        height: 1.1,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    'تابع صحة أطفالك بكل سهولة',
-                                    style: GoogleFonts.readexPro(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                      height: 1.1,
+                                    Text(
+                                      user?.role.toLowerCase().contains('doctor') == true
+                                          ? 'نظام المواليد - لوحة تحكم الطبيب'
+                                          : 'تابع صحة أطفالك بكل سهولة',
+                                      style: GoogleFonts.readexPro(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                        height: 1.1,
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
                               // Right: Icon
-                              const Icon(
-                                Icons.people_outline,
+                              Icon(
+                                user?.role.toLowerCase().contains('doctor') == true
+                                    ? Icons.medical_services_outlined
+                                    : Icons.people_outline,
                                 color: Colors.white,
                                 size: 28,
                               ),
@@ -342,7 +354,9 @@ class HomePage extends StatelessWidget {
                         Center(
                           child: SizedBox(
                             width: 345,
-                            child: ParentDashboardView(parentId: user!.id),
+                            child: user!.role.toLowerCase().contains('doctor')
+                                ? DoctorDashboardView(userId: user!.id)
+                                : ParentDashboardView(parentId: user!.id),
                           ),
                         )
                       else

@@ -17,6 +17,7 @@ class ChildModel extends ChildEntity {
     super.parentPhoneNumber,
     super.parentNationalId,
     super.parentEmail,
+    super.userType = 'Child',
   });
 
   factory ChildModel.fromJson(Map<String, dynamic> json) {
@@ -29,14 +30,27 @@ class ChildModel extends ChildEntity {
       parsedId = int.tryParse(idVal?.toString() ?? '0') ?? 0;
     }
 
+    // Calculate age if missing (common in Parent details response)
+    int ageYears = json['ageWithYears'] ?? 0;
+    if (ageYears == 0 && json['birthDate'] != null) {
+      try {
+        final birthDate = DateTime.parse(json['birthDate']);
+        final now = DateTime.now();
+        ageYears = now.year - birthDate.year;
+        if (now.month < birthDate.month || (now.month == birthDate.month && now.day < birthDate.day)) {
+          ageYears--;
+        }
+      } catch (_) {}
+    }
+
     return ChildModel(
       id: parsedId,
       fullName: json['childFullName'] ?? json['fullName'] ?? '',
-      ageWithYears: json['ageWithYears'] ?? 0,
+      ageWithYears: ageYears,
       ageWithMonths: json['ageWithMonths'] ?? 0,
       gender: json['gender'] ?? '',
       birthDate: json['birthDate'] ?? '',
-      childNationalId: json['childNationalId']?.toString(),
+      childNationalId: (json['childNationalId'] ?? json['nationalId'])?.toString(),
       village: json['village']?.toString(),
       city: json['city']?.toString(),
       governorate: json['governorate']?.toString(),
@@ -45,6 +59,7 @@ class ChildModel extends ChildEntity {
       parentPhoneNumber: json['parentPhoneNumber']?.toString(),
       parentNationalId: json['parentNationalId']?.toString(),
       parentEmail: json['parentEmail']?.toString(),
+      userType: json['userType']?.toString() ?? 'Child',
     );
   }
 

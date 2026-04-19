@@ -20,6 +20,12 @@ class ApiConstants {
   static const String getSpecificChildMedicalHistory = '/Parent/GetSpecificChildMedicalHistoryAsync';
   static const String getSpecificParentMedicalHistory = '/Parent/GetSpecificParentMedicalHistoryAsync';
 
+  // ─── Doctor Endpoints ─────────────────────────────────────────────────────
+  static const String getDoctorForDashboard = '/DoctorDashboard/GetDoctorForDashboard';
+  static const String getDoctorDetails = '/Parent/GetParentDetailsAsync';
+  static const String searchChild = '/DoctorDashboard/GetUserDetailsAsync';
+  static const String addChildMedicalRecord = '/DoctorDashboard/AddChildMedicalRecord';
+
   // ─── Timings ──────────────────────────────────────────────────────────────
   static const Duration connectTimeout = Duration(seconds: 15);
   static const Duration receiveTimeout = Duration(seconds: 15);

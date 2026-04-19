@@ -33,8 +33,9 @@ class _LoginView extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
+          debugPrint('User Role (Login): ${state.user.role}');
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          if (state.user.role.toLowerCase() == 'doctor') {
+          if (state.user.role.toLowerCase().contains('doctor')) {
             context.goNamed('login-role-choice', extra: state.user);
           } else {
             context.goNamed('home', extra: state.user);

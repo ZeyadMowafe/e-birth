@@ -1,3 +1,8 @@
+import 'package:ebirth/core/di/injection_container.dart';
+import 'package:ebirth/features/parent/presentation/pages/parent_medical_history_page.dart';
+import 'package:ebirth/features/parent/presentation/pages/parent_profile_page.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:ebirth/features/auth/presentation/pages/forgot_password_page.dart';
@@ -14,12 +19,10 @@ import 'package:ebirth/features/onboarding/presentation/pages/onboarding_page.da
 import 'package:ebirth/features/splash/presentation/pages/splash_page.dart';
 import 'package:ebirth/features/parent/presentation/pages/child_details_page.dart';
 import 'package:ebirth/features/parent/domain/entities/child_entity.dart';
-import 'package:ebirth/features/parent/presentation/pages/parent_profile_page.dart';
-import 'package:ebirth/features/parent/presentation/pages/parent_medical_history_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/parent/presentation/cubit/parent_profile_cubit.dart';
 import 'package:ebirth/features/parent/presentation/cubit/parent_medical_history_cubit.dart';
+import 'package:ebirth/features/doctor/presentation/pages/doctor_profile_page.dart';
+import 'package:ebirth/features/doctor/presentation/cubit/doctor_profile_cubit.dart';
 
 class AppRouter {
   AppRouter._();
@@ -100,6 +103,25 @@ class AppRouter {
         name: 'profile',
         builder: (context, state) {
           final user = state.extra as UserEntity?;
+          final String role = (user?.role ?? '').toLowerCase();
+
+          debugPrint(
+            '[AppRouter] Profile Navigation - Role: "$role", UserID: "${user?.id}"',
+          );
+
+          if (role.contains('doctor')) {
+            return BlocProvider<DoctorProfileCubit>(
+              create: (context) {
+                final cubit = sl<DoctorProfileCubit>();
+                if (user != null && user.id.isNotEmpty) {
+                  cubit.fetchDoctorProfile(user.id);
+                }
+                return cubit;
+              },
+              child: DoctorProfilePage(user: user),
+            );
+          }
+
           return BlocProvider<ParentProfileCubit>(
             create: (context) {
               final cubit = sl<ParentProfileCubit>();
@@ -149,10 +171,7 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           final initialChild = state.extra as ChildEntity?;
-          return ChildDetailsPage(
-            childId: id,
-            initialChild: initialChild,
-          );
+          return ChildDetailsPage(childId: id, initialChild: initialChild);
         },
       ),
     ],

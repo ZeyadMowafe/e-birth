@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class LoginRoleChoicePage extends StatelessWidget {
   final UserEntity user;
@@ -16,59 +18,84 @@ class LoginRoleChoicePage extends StatelessWidget {
       showBackButton: true,
       headerCrossAxisAlignment: CrossAxisAlignment.start,
       bottomSheetHeight: MediaQuery.of(context).size.height * 0.72,
-      headerTopPadding: 90.0,
+      headerTopPadding: 60.0,
       bottomSheetPadding: const EdgeInsets.only(top: 32, left: 24, right: 24),
       title: 'تسجيل الدخول',
       titleStyle: const TextStyle(
         fontFamily: 'Arial',
         fontWeight: FontWeight.w700,
-        fontSize: 40,
-        height: 1.0,
+        fontSize: 32,
+        height: 1.2,
         color: Colors.white,
       ),
-      subtitle: 'اختر وضع الدخول المناسب لك',
+      subtitle: 'اختر وضع الدخول المناسب لك للمتابعة',
       subtitleStyle: const TextStyle(
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w400,
         fontSize: 16,
         height: 1.5,
-        color: Colors.white,
+        color: Colors.white70,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 24),
+          AnimationLimiter(
+            child: Column(
+              children: AnimationConfiguration.toStaggeredList(
+                duration: const Duration(milliseconds: 600),
+                childAnimationBuilder: (widget) => SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: FadeInAnimation(child: widget),
+                ),
+                children: [
+                  // ── Parent Mode Card ─────────────────────────────────────
+                  _ChoiceCard(
+                    icon: Icons.family_restroom_outlined,
+                    title: 'دخول كـ ولي أمر',
+                    subtitle: 'استخدام التطبيق لمتابعة أطفالك والتقارير الطبية',
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFB8ECC8), Color(0xFFE5F9E0)],
+                    ),
+                    iconColor: const Color(0xFF2E7D32),
+                    onTap: () => context.goNamed('home',
+                        extra: user.copyWith(role: 'Parent')),
+                  ),
+                  const SizedBox(height: 20),
 
-          // ── Parent Mode Card ─────────────────────────────────────
-          _ChoiceCard(
-            icon: Icons.person_outline,
-            title: 'دخول كـ ولي أمر',
-            subtitle: 'استخدام التطبيق لمتابعة أطفالك',
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFB8ECC8), Color(0xFF9DD9B4)],
+                  // ── Doctor Mode Card ─────────────────────────────────────
+                  _ChoiceCard(
+                    icon: Icons.medical_services_outlined,
+                    title: 'دخول كـ طبيب',
+                    subtitle: 'استخدام التطبيق لإدارة السجلات الطبية للمرضى',
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF4E8B97), Color(0xFF67B2BE)],
+                    ),
+                    textColor: Colors.white,
+                    iconColor: const Color(0xFF4E8B97),
+                    onTap: () => context.goNamed('home', extra: user),
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  FadeIn(
+                    delay: const Duration(milliseconds: 800),
+                    child: Center(
+                      child: Text(
+                        'يمكنك دائماً تغيير وضع الدخول من الإعدادات',
+                        style: TextStyle(
+                          color: AppColors.textSecondary.withOpacity(0.6),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            iconColor: const Color(0xFF1DA8C4),
-            onTap: () =>
-                context.goNamed('home', extra: user.copyWith(role: 'Parent')),
           ),
-          const SizedBox(height: 16),
-
-          // ── Doctor Mode Card ─────────────────────────────────────
-          _ChoiceCard(
-            icon: Icons.monitor_heart_outlined,
-            title: 'دخول كـ طبيب',
-            subtitle: 'استخدام التطبيق لإدارة السجلات الطبية',
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF1DA8C4), Color(0xFF16899F)],
-            ),
-            textColor: Colors.white,
-            iconColor: const Color(0xFF1DA8C4),
-            onTap: () => context.goNamed('home', extra: user),
-          ),
-          const SizedBox(height: 24),
         ],
       ),
     );
@@ -96,31 +123,24 @@ class _ChoiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTextColor = textColor ?? AppColors.textPrimary;
+    final effectiveTextColor = textColor ?? const Color(0xFF1E2939);
     final effectiveSubtitleColor =
-        textColor?.withOpacity(0.8) ?? AppColors.textSecondary;
+        textColor?.withOpacity(0.8) ?? const Color(0xFF4A5565);
     final effectiveIconColor = iconColor ?? AppColors.primary;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 124,
-        padding: const EdgeInsets.all(20),
+        height: 140,
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           gradient: gradient,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 6,
-              offset: Offset(0, 4),
-              spreadRadius: -4,
-            ),
-            BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 15,
-              offset: Offset(0, 10),
-              spreadRadius: -3,
+              color: (iconColor ?? Colors.black).withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
@@ -134,18 +154,18 @@ class _ChoiceCard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: effectiveTextColor,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     subtitle,
                     style: TextStyle(
                       fontSize: 14,
                       color: effectiveSubtitleColor,
-                      height: 1.5,
+                      height: 1.4,
                     ),
                   ),
                 ],
@@ -153,13 +173,20 @@ class _ChoiceCard extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Container(
-              width: 56,
-              height: 56,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: Icon(icon, color: effectiveIconColor, size: 28),
+              child: Icon(icon, color: effectiveIconColor, size: 32),
             ),
           ],
         ),

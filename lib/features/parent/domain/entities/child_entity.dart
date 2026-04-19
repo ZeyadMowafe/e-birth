@@ -18,6 +18,7 @@ class ChildEntity extends Equatable {
   final String? parentPhoneNumber;
   final String? parentNationalId;
   final String? parentEmail;
+  final String userType; // 'Child' or 'Parent'
 
   const ChildEntity({
     required this.id,
@@ -35,6 +36,7 @@ class ChildEntity extends Equatable {
     this.parentPhoneNumber,
     this.parentNationalId,
     this.parentEmail,
+    this.userType = 'Child',
   });
 
   @override
@@ -54,5 +56,6 @@ class ChildEntity extends Equatable {
         parentPhoneNumber,
         parentNationalId,
         parentEmail,
+        userType,
       ];
 }

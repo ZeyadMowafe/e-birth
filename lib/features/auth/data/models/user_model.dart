@@ -11,12 +11,20 @@ class UserModel extends UserEntity {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    String parseRole(dynamic roleData) {
+      if (roleData == null) return 'Parent';
+      if (roleData is List) {
+        return roleData.map((e) => e.toString()).join(',');
+      }
+      return roleData.toString();
+    }
+
     return UserModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       token: json['token']?.toString() ?? '',
-      role: json['role']?.toString() ?? 'Parent',
+      role: parseRole(json['role']),
     );
   }
 
@@ -43,12 +51,20 @@ class UserModel extends UserEntity {
       const roleKey =
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
+      String parseRole(dynamic roleData) {
+        if (roleData == null) return 'Parent';
+        if (roleData is List) {
+          return roleData.map((e) => e.toString()).join(',');
+        }
+        return roleData.toString();
+      }
+
       return UserModel(
         id: decoded[idKey]?.toString() ?? '',
         name: decoded[nameKey]?.toString() ?? 'User',
         email: email,
         token: token,
-        role: decoded[roleKey]?.toString() ?? 'Parent',
+        role: parseRole(decoded[roleKey]),
       );
     } catch (_) {
       // Fallback if JWT decoding fails

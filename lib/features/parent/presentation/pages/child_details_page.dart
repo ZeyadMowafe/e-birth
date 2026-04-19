@@ -14,11 +14,7 @@ class ChildDetailsPage extends StatefulWidget {
   final String childId;
   final ChildEntity? initialChild;
 
-  const ChildDetailsPage({
-    super.key,
-    required this.childId,
-    this.initialChild,
-  });
+  const ChildDetailsPage({super.key, required this.childId, this.initialChild});
 
   @override
   State<ChildDetailsPage> createState() => _ChildDetailsPageState();
@@ -31,7 +27,9 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _cubit = sl<ChildDetailsCubit>()..fetchChildDetails(widget.childId);
+    final userType = widget.initialChild?.userType ?? 'Child';
+    _cubit = sl<ChildDetailsCubit>()
+      ..fetchChildDetails(widget.childId, userType: userType);
   }
 
   @override
@@ -41,8 +39,9 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
   }
 
   String _formatAge(ChildEntity? c) {
-    if (c == null) return '-';
-    if (c.ageWithYears > 0) return '${c.ageWithYears} سنة و ${c.ageWithMonths} شهر';
+    if (c == null) return '--';
+    if (c.ageWithYears > 0)
+      return '${c.ageWithYears} سنة و ${c.ageWithMonths} شهر';
     if (c.ageWithMonths > 0) return '${c.ageWithMonths} شهر';
     return 'حديث الولادة';
   }
@@ -109,7 +108,9 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'ملف الطفل',
+                      widget.initialChild?.userType == 'Parent'
+                          ? 'ملف المريض'
+                          : 'ملف الطفل',
                       style: GoogleFonts.readexPro(
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
@@ -127,7 +128,11 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                   child: Container(
                     width: 341,
                     height: 120,
-                    padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                      right: 20,
+                      left: 20,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -145,82 +150,84 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                         ),
                       ],
                     ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Avatar 80×80
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Color(0xFFDBEAFE), Color(0xFFBEDBFF)],
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Center(
-                          child: Text(
-                            initialChild?.fullName.isNotEmpty == true
-                                ? initialChild!.fullName[0].toUpperCase()
-                                : '؟',
-                            style: GoogleFonts.readexPro(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF1D4ED8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Avatar 80×80
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFFDBEAFE), Color(0xFFBEDBFF)],
                             ),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      // Name + age + national id
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              initialChild?.fullName ?? 'جاري التحميل...',
+                          child: Center(
+                            child: Text(
+                              initialChild?.fullName.isNotEmpty == true
+                                  ? initialChild!.fullName[0].toUpperCase()
+                                  : '؟',
                               style: GoogleFonts.readexPro(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFF111827),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'العمر: ${_formatAge(initialChild)}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF6B7280),
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1D4ED8),
                               ),
                             ),
-                            const SizedBox(height: 2),
-                            BlocBuilder<ChildDetailsCubit, ChildDetailsState>(
-                              builder: (context, state) {
-                                final nationalId = state is ChildDetailsLoaded
-                                    ? (state.childDetails.childNationalId ?? 'غير متوفر')
-                                    : (initialChild?.childNationalId ?? '-');
-                                return Text(
-                                  'ر.ق: $nationalId',
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    color: Color(0xFF9CA3AF),
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                );
-                              },
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 16),
+                        // Name + age + national id
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                initialChild?.fullName ?? 'جاري التحميل...',
+                                style: GoogleFonts.readexPro(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF111827),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'العمر: ${_formatAge(initialChild)}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF6B7280),
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              BlocBuilder<ChildDetailsCubit, ChildDetailsState>(
+                                builder: (context, state) {
+                                  final nationalId = state is ChildDetailsLoaded
+                                      ? (state.childDetails.childNationalId ??
+                                            'غير متوفر')
+                                      : (initialChild?.childNationalId ?? '-');
+                                  return Text(
+                                    'ر.ق: $nationalId',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF9CA3AF),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),),
+                ),
 
                 const SizedBox(height: 16),
 
@@ -232,7 +239,8 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _buildTab(0, 'البيانات الأساسية'),
-                      _buildTab(1, 'جدول التطعيمات'),
+                      if (widget.initialChild?.userType != 'Parent')
+                        _buildTab(1, 'جدول التطعيمات'),
                       _buildTab(2, 'التاريخ المرضي'),
                     ],
                   ),
@@ -243,14 +251,20 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                 // ── Tab Content ─────────────────────────────────────
                 BlocBuilder<ChildDetailsCubit, ChildDetailsState>(
                   builder: (context, state) {
-                    if (state is ChildDetailsLoading || state is ChildDetailsInitial) {
+                    if (state is ChildDetailsLoading ||
+                        state is ChildDetailsInitial) {
                       return Column(
                         children: [
                           const SizedBox(height: 20),
-                          ...List.generate(4, (index) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: const ShimmerLoading.rectangular(height: 60),
-                          )),
+                          ...List.generate(
+                            4,
+                            (index) => Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: const ShimmerLoading.rectangular(
+                                height: 60,
+                              ),
+                            ),
+                          ),
                         ],
                       );
                     }
@@ -259,7 +273,11 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                         padding: const EdgeInsets.only(top: 60),
                         child: Column(
                           children: [
-                            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                            const Icon(
+                              Icons.error_outline,
+                              size: 48,
+                              color: Colors.red,
+                            ),
                             const SizedBox(height: 12),
                             Text(
                               'حدث خطأ: ${state.message}',
@@ -268,7 +286,8 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                             ),
                             const SizedBox(height: 12),
                             ElevatedButton(
-                              onPressed: () => _cubit.fetchChildDetails(widget.childId),
+                              onPressed: () =>
+                                  _cubit.fetchChildDetails(widget.childId),
                               child: const Text('إعادة المحاولة'),
                             ),
                           ],
@@ -279,10 +298,15 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                       if (_selectedTab == 0) {
                         return FadeInUp(
                           duration: const Duration(milliseconds: 500),
-                          child: _buildInfoCard(state.childDetails, screenWidth),
+                          child: _buildInfoCard(
+                            state.childDetails,
+                            screenWidth,
+                          ),
                         );
                       } else if (_selectedTab == 1) {
-                        return VaccinationTimeline(vaccinations: state.vaccinations);
+                        return VaccinationTimeline(
+                          vaccinations: state.vaccinations,
+                        );
                       } else {
                         return FadeInUp(
                           duration: const Duration(milliseconds: 500),
@@ -290,20 +314,30 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 8,
+                                ),
                                 child: Row(
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF4EBCBA).withOpacity(0.1),
+                                        color: const Color(
+                                          0xFF4EBCBA,
+                                        ).withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: const Icon(Icons.history_edu, color: Color(0xFF4EBCBA), size: 20),
+                                      child: const Icon(
+                                        Icons.history_edu,
+                                        color: Color(0xFF4EBCBA),
+                                        size: 20,
+                                      ),
                                     ),
                                     const SizedBox(width: 12),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'التاريخ المرضي والزيارات',
@@ -328,7 +362,8 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                               const SizedBox(height: 12),
                               MedicalHistoryList(
                                 histories: state.medicalHistories,
-                                isChild: true,
+                                isChild:
+                                    widget.initialChild?.userType != 'Parent',
                               ),
                             ],
                           ),
@@ -440,33 +475,71 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
           ),
           const SizedBox(height: 16),
 
-          _infoRow(icon: Icons.person_outline, label: 'الاسم بالكامل', value: child.fullName),
-          _divider(),
-          _infoRow(icon: Icons.badge_outlined, label: 'الرقم القومي', value: child.childNationalId ?? 'غير متوفر'),
-          _divider(),
-          _infoRow(icon: Icons.cake_outlined, label: 'تاريخ الميلاد', value: _formatDate(child.birthDate)),
-          _divider(),
-          _infoRow(icon: Icons.access_time_outlined, label: 'العمر', value: _formatAge(child)),
+          _infoRow(
+            icon: Icons.person_outline,
+            label: 'الاسم بالكامل',
+            value: child.fullName,
+          ),
           _divider(),
           _infoRow(
-            icon: child.gender.toLowerCase() == 'female' ? Icons.female : Icons.male,
+            icon: Icons.badge_outlined,
+            label: 'الرقم القومي',
+            value: child.childNationalId ?? 'غير متوفر',
+          ),
+          _divider(),
+          _infoRow(
+            icon: Icons.cake_outlined,
+            label: 'تاريخ الميلاد',
+            value: _formatDate(child.birthDate),
+          ),
+          _divider(),
+          _infoRow(
+            icon: Icons.access_time_outlined,
+            label: 'العمر',
+            value: _formatAge(child),
+          ),
+          _divider(),
+          _infoRow(
+            icon: child.gender.toLowerCase() == 'female'
+                ? Icons.female
+                : Icons.male,
             label: 'الجنس',
             value: _formatGender(child.gender),
           ),
           _divider(),
-          _infoRow(icon: Icons.water_drop_outlined, label: 'فصيلة الدم', value: _formatBlood(child.bloodType)),
+          _infoRow(
+            icon: Icons.water_drop_outlined,
+            label: 'فصيلة الدم',
+            value: _formatBlood(child.bloodType),
+          ),
           _divider(),
-          _infoRow(icon: Icons.location_city_outlined, label: 'المحافظة', value: child.governorate ?? 'غير متوفر'),
+          _infoRow(
+            icon: Icons.location_city_outlined,
+            label: 'المحافظة',
+            value: child.governorate ?? 'غير متوفر',
+          ),
           _divider(),
-          _infoRow(icon: Icons.apartment_outlined, label: 'المدينة', value: child.city ?? 'غير متوفر'),
+          _infoRow(
+            icon: Icons.apartment_outlined,
+            label: 'المدينة',
+            value: child.city ?? 'غير متوفر',
+          ),
           _divider(),
-          _infoRow(icon: Icons.holiday_village_outlined, label: 'القرية', value: child.village ?? 'غير متوفر'),
+          _infoRow(
+            icon: Icons.holiday_village_outlined,
+            label: 'القرية',
+            value: child.village ?? 'غير متوفر',
+          ),
         ],
       ),
     );
   }
 
-  Widget _infoRow({required IconData icon, required String label, required String value}) {
+  Widget _infoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -475,10 +548,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
           const SizedBox(width: 10),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF6B7280),
-            ),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
           ),
           const Spacer(),
           Text(

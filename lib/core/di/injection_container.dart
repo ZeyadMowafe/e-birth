@@ -43,6 +43,19 @@ import 'package:ebirth/features/parent/presentation/cubit/parent_profile_cubit.d
 import 'package:ebirth/features/parent/presentation/cubit/parent_medical_history_cubit.dart';
 import 'package:ebirth/features/parent/presentation/cubit/medical_record_detail_cubit.dart';
 
+// ─── Doctor Feature Imports ──────────────────────────────────────────────
+import 'package:ebirth/features/doctor/data/datasources/doctor_remote_data_source.dart';
+import 'package:ebirth/features/doctor/data/repositories/doctor_repository_impl.dart';
+import 'package:ebirth/features/doctor/domain/repositories/doctor_repository.dart';
+import 'package:ebirth/features/doctor/domain/usecases/get_doctor_dashboard_data_usecase.dart';
+import 'package:ebirth/features/doctor/domain/usecases/search_child_usecase.dart';
+import 'package:ebirth/features/doctor/domain/usecases/add_child_medical_record_usecase.dart';
+import 'package:ebirth/features/doctor/domain/usecases/get_doctor_profile_usecase.dart';
+import 'package:ebirth/features/doctor/presentation/cubit/doctor_dashboard_cubit.dart';
+import 'package:ebirth/features/doctor/presentation/cubit/doctor_search_cubit.dart';
+import 'package:ebirth/features/doctor/presentation/cubit/add_medical_record_cubit.dart';
+import 'package:ebirth/features/doctor/presentation/cubit/doctor_profile_cubit.dart';
+
 /// Global service locator instance.
 final GetIt sl = GetIt.instance;
 
@@ -53,7 +66,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<InternetConnection>(() => InternetConnection());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
-  // Dio (configured for easy backend switching)
+  // Dio
   sl.registerLazySingleton<Dio>(() {
     final dio = Dio(
       BaseOptions(
@@ -63,28 +76,24 @@ Future<void> initDependencies() async {
       ),
     );
 
-    // Add Auth Interceptor to automatically inject token
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // Prefer in-memory token (fast, no async), fall back to SharedPrefs on app restart
           String? token = AuthTokenHolder.token;
           if (token == null || token.isEmpty) {
             token = await SharedPrefsHelper.getToken();
             if (token != null && token.isNotEmpty) {
-              AuthTokenHolder.setToken(token); // warm up in-memory cache
+              AuthTokenHolder.setToken(token);
             }
           }
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-          debugPrint('[AuthInterceptor] token=${token?.substring(0, 20)}... → ${options.uri}');
           return handler.next(options);
         },
       ),
     );
 
-    // Bypass SSL certificate errors in debug mode (e.g. self-signed certs on shared hosting)
     if (kDebugMode) {
       dio.httpClientAdapter = IOHttpClientAdapter(
         createHttpClient: () {
@@ -105,18 +114,9 @@ Future<void> initDependencies() async {
   });
 
   // ─── Auth Feature ────────────────────────────────────────────────────────
-
-  // Data Sources
-  sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(dio: sl()),
-  );
-
-  // Repositories
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
-  );
-
-  // Use Cases
+  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()));
+  
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => RegisterDoctorUseCase(repository: sl()));
@@ -124,34 +124,16 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => VerifyOtpUseCase(repository: sl()));
   sl.registerLazySingleton(() => ResetPasswordUseCase(repository: sl()));
 
-  // Cubit — factory so a fresh instance is created every time
-  sl.registerFactory<LoginCubit>(() => LoginCubit(loginUseCase: sl()));
-  sl.registerFactory<RegisterCubit>(
-    () => RegisterCubit(registerUseCase: sl(), registerDoctorUseCase: sl()),
-  );
-  sl.registerFactory<ForgotPasswordCubit>(
-    () => ForgotPasswordCubit(forgotPasswordUseCase: sl()),
-  );
-  sl.registerFactory<VerifyOtpCubit>(
-    () => VerifyOtpCubit(verifyOtpUseCase: sl()),
-  );
-  sl.registerFactory<ResetPasswordCubit>(
-    () => ResetPasswordCubit(resetPasswordUseCase: sl()),
-  );
+  sl.registerFactory(() => LoginCubit(loginUseCase: sl()));
+  sl.registerFactory(() => RegisterCubit(registerUseCase: sl(), registerDoctorUseCase: sl()));
+  sl.registerFactory(() => ForgotPasswordCubit(forgotPasswordUseCase: sl()));
+  sl.registerFactory(() => VerifyOtpCubit(verifyOtpUseCase: sl()));
+  sl.registerFactory(() => ResetPasswordCubit(resetPasswordUseCase: sl()));
 
   // ─── Parent Feature ──────────────────────────────────────────────────────
+  sl.registerLazySingleton<ParentRemoteDataSource>(() => ParentRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<ParentRepository>(() => ParentRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()));
 
-  // Data Sources
-  sl.registerLazySingleton<ParentRemoteDataSource>(
-    () => ParentRemoteDataSourceImpl(dio: sl()),
-  );
-
-  // Repositories
-  sl.registerLazySingleton<ParentRepository>(
-    () => ParentRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
-  );
-
-  // Use Cases
   sl.registerLazySingleton(() => GetParentWithChildrenUseCase(sl()));
   sl.registerLazySingleton(() => GetParentDetailsUseCase(sl()));
   sl.registerLazySingleton(() => GetChildDetailsUseCase(sl()));
@@ -161,26 +143,32 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => GetSpecificChildMedicalHistoryUseCase(sl()));
   sl.registerLazySingleton(() => GetSpecificParentMedicalHistoryUseCase(sl()));
 
-  // Cubits
-  sl.registerFactory<ParentCubit>(() => ParentCubit(getParentWithChildrenUseCase: sl()));
-  sl.registerFactory<ParentProfileCubit>(() => ParentProfileCubit(
-    getParentDetailsUseCase: sl(),
-    getParentWithChildrenUseCase: sl(),
-  ));
-  sl.registerFactory<ParentMedicalHistoryCubit>(() => ParentMedicalHistoryCubit(
+  sl.registerFactory(() => ParentCubit(getParentWithChildrenUseCase: sl()));
+  sl.registerFactory(() => ParentProfileCubit(getParentDetailsUseCase: sl(), getParentWithChildrenUseCase: sl()));
+  sl.registerFactory(() => ParentMedicalHistoryCubit(getParentMedicalHistoryUseCase: sl(), getParentWithChildrenUseCase: sl()));
+  sl.registerFactory(() => MedicalRecordDetailCubit(getSpecificChildMedicalHistoryUseCase: sl(), getSpecificParentMedicalHistoryUseCase: sl()));
+  sl.registerFactory(() => ChildDetailsCubit(
+    getChildDetailsUseCase: sl(),
+    getChildVaccinationsUseCase: sl(),
+    getChildMedicalHistoryUseCase: sl(),
     getParentMedicalHistoryUseCase: sl(),
-    getParentWithChildrenUseCase: sl(),
+    getParentDetailsUseCase: sl(),
   ));
-  sl.registerFactory<MedicalRecordDetailCubit>(() => MedicalRecordDetailCubit(
-    getSpecificChildMedicalHistoryUseCase: sl(),
-    getSpecificParentMedicalHistoryUseCase: sl(),
-  ));
-  sl.registerFactory<ChildDetailsCubit>(
-    () => ChildDetailsCubit(
-      getChildDetailsUseCase: sl(),
-      getChildVaccinationsUseCase: sl(),
-      getChildMedicalHistoryUseCase: sl(),
-    ),
-  );
-}
 
+  // ─── Doctor Feature ──────────────────────────────────────────────────────
+  sl.registerLazySingleton<DoctorRemoteDataSource>(() => DoctorRemoteDataSourceImpl(dio: sl()));
+  sl.registerLazySingleton<DoctorRepository>(() => DoctorRepositoryImpl(remoteDataSource: sl()));
+
+  sl.registerLazySingleton(() => GetDoctorDashboardDataUseCase(repository: sl()));
+  sl.registerLazySingleton(() => SearchChildUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AddChildMedicalRecordUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetDoctorProfileUseCase(sl()));
+
+  sl.registerFactory(() => DoctorDashboardCubit(getDoctorDashboardData: sl()));
+  sl.registerFactory(() => DoctorSearchCubit(searchChildUseCase: sl()));
+  sl.registerFactory(() => AddMedicalRecordCubit(addRecordUseCase: sl()));
+  sl.registerFactory(() => DoctorProfileCubit(
+    getDoctorProfileUseCase: sl(),
+    getDoctorDashboardDataUseCase: sl(),
+  ));
+}
