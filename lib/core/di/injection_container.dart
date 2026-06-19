@@ -170,5 +170,7 @@ Future<void> initDependencies() async {
   sl.registerFactory(() => DoctorProfileCubit(
     getDoctorProfileUseCase: sl(),
     getDoctorDashboardDataUseCase: sl(),
+    getParentWithChildrenUseCase: sl(),
+    getParentDetailsUseCase: sl(),
   ));
 }

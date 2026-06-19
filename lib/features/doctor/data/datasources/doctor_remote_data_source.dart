@@ -136,6 +136,12 @@ class DoctorRemoteDataSourceImpl implements DoctorRemoteDataSource {
       }
     } on DioException catch (e) {
       print('[DoctorRemoteDataSource] Search DioError: ${e.message}');
+      
+      // Handle 404 specifically as "Not Registered"
+      if (e.response?.statusCode == 404) {
+        throw const ServerException(message: 'هذا الرقم القومي غير مسجل بالنظام');
+      }
+      
       throw ServerException(message: e.message ?? 'خطأ في الاتصال بالسيرفر');
     } catch (e, stack) {
       print('====================================================');

@@ -35,13 +35,18 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => sl<DoctorDashboardCubit>()..fetchDoctorDashboardData(widget.userId)),
+        BlocProvider(
+          create: (context) =>
+              sl<DoctorDashboardCubit>()
+                ..fetchDoctorDashboardData(widget.userId),
+        ),
         BlocProvider(create: (context) => sl<DoctorSearchCubit>()),
         BlocProvider(create: (context) => sl<AddMedicalRecordCubit>()),
       ],
       child: BlocBuilder<DoctorDashboardCubit, DoctorDashboardState>(
         builder: (context, state) {
-          if (state is DoctorDashboardLoading || state is DoctorDashboardInitial) {
+          if (state is DoctorDashboardLoading ||
+              state is DoctorDashboardInitial) {
             return _buildLoadingState();
           } else if (state is DoctorDashboardError) {
             return _buildErrorState(state.message);
@@ -67,16 +72,13 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
 
   Widget _buildErrorState(String message) {
     return Center(
-      child: Text(
-        message,
-        style: GoogleFonts.readexPro(color: Colors.red),
-      ),
+      child: Text(message, style: GoogleFonts.readexPro(color: Colors.red)),
     );
   }
 
   Widget _buildDashboardContent(BuildContext context, dynamic data) {
     final children = data.children ?? [];
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -103,18 +105,18 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
                 child: widget,
               ),
               children: [
-                _buildStatCard(
-                  title: 'إجمالي الحالات',
-                  value: '154',
-                  icon: Icons.people_alt_outlined,
-                  color: const Color(0xFF4E8B97),
-                ),
-                _buildStatCard(
-                  title: 'بلاغات اليوم',
-                  value: '12',
-                  icon: Icons.app_registration_outlined,
-                  color: const Color(0xFF2E7D32),
-                ),
+                // _buildStatCard(
+                //   title: 'إجمالي الحالات',
+                //   value: '154',
+                //   icon: Icons.people_alt_outlined,
+                //   color: const Color(0xFF4E8B97),
+                // ),
+                // _buildStatCard(
+                //   title: 'بلاغات اليوم',
+                //   value: '12',
+                //   icon: Icons.app_registration_outlined,
+                //   color: const Color(0xFF2E7D32),
+                // ),
               ],
             ),
           ),
@@ -123,63 +125,61 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
 
         // ── "My Children" Section (The Hybrid Part) ────────────────
         if (children.isNotEmpty) ...[
-           _buildSectionTitle('أطفالي'),
-            const SizedBox(height: 16),
-            AnimationLimiter(
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: children.length,
-                itemBuilder: (context, index) {
-                  final child = children[index];
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    duration: const Duration(milliseconds: 600),
-                    child: FadeInRight(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: ChildCard(
-                          child: child,
-                          onTap: () {
-                            context.pushNamed(
-                              'child-details',
-                              pathParameters: {'id': child.id.toString()},
-                              extra: child,
-                            );
-                          },
-                        ),
+          _buildSectionTitle('أطفالي'),
+          const SizedBox(height: 16),
+          AnimationLimiter(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: children.length,
+              itemBuilder: (context, index) {
+                final child = children[index];
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(milliseconds: 600),
+                  child: FadeInRight(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: ChildCard(
+                        child: child,
+                        onTap: () {
+                          context.pushNamed(
+                            'child-details',
+                            pathParameters: {'id': child.id.toString()},
+                            extra: child,
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            const SizedBox(height: 24),
+          ),
+          const SizedBox(height: 24),
         ],
 
         // ── Recent Activity Section ─────────────────────────────
-        _buildSectionTitleWithAction('آخر النشاطات الطبية', 'عرض الكل'),
+        // _buildSectionTitleWithAction('آخر النشاطات الطبية', 'عرض الكل')
         const SizedBox(height: 12),
-        
-        AnimationLimiter(
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                duration: const Duration(milliseconds: 600),
-                child: SlideAnimation(
-                  verticalOffset: 30.0,
-                  child: FadeInAnimation(
-                    child: _buildActivityItem(index),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+
+        // AnimationLimiter(
+        //   child: ListView.builder(
+        //     shrinkWrap: true,
+        //     physics: const NeverScrollableScrollPhysics(),
+        //     itemCount: 3,
+        //     itemBuilder: (context, index) {
+        //       return AnimationConfiguration.staggeredList(
+        //         position: index,
+        //         duration: const Duration(milliseconds: 600),
+        //         child: SlideAnimation(
+        //           verticalOffset: 30.0,
+        //           child: FadeInAnimation(child: _buildActivityItem(index)),
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ),
       ],
     );
   }
@@ -202,23 +202,30 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
           Expanded(
             child: TextField(
               controller: _searchController,
-              onSubmitted: (val) => context.read<DoctorSearchCubit>().searchForChild(val),
+              onSubmitted: (val) =>
+                  context.read<DoctorSearchCubit>().searchForChild(val),
               decoration: InputDecoration(
                 hintText: 'البحث برقم الطفل القومي...',
-                hintStyle: GoogleFonts.readexPro(fontSize: 14, color: const Color(0xFF94A3B8)),
+                hintStyle: GoogleFonts.readexPro(
+                  fontSize: 14,
+                  color: const Color(0xFF94A3B8),
+                ),
                 prefixIcon: const Icon(Icons.search, color: Color(0xFF4E8B97)),
-                suffixIcon: _searchController.text.isNotEmpty 
-                  ? IconButton(
-                      icon: const Icon(Icons.clear, color: Color(0xFF94A3B8)),
-                      onPressed: () {
-                        _searchController.clear();
-                        context.read<DoctorSearchCubit>().clearSearch();
-                        setState(() {});
-                      },
-                    )
-                  : null,
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: Color(0xFF94A3B8)),
+                        onPressed: () {
+                          _searchController.clear();
+                          context.read<DoctorSearchCubit>().clearSearch();
+                          setState(() {});
+                        },
+                      )
+                    : null,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 15,
+                ),
               ),
               onChanged: (val) => setState(() {}),
             ),
@@ -226,9 +233,14 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: GestureDetector(
-              onTap: () => context.read<DoctorSearchCubit>().searchForChild(_searchController.text),
+              onTap: () => context.read<DoctorSearchCubit>().searchForChild(
+                _searchController.text,
+              ),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF4E8B97),
                   borderRadius: BorderRadius.circular(12),
@@ -273,8 +285,11 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      state.message, 
-                      style: GoogleFonts.readexPro(color: Colors.red, fontSize: 13),
+                      state.message,
+                      style: GoogleFonts.readexPro(
+                        color: Colors.red,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ],
@@ -301,7 +316,9 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
                       offset: const Offset(0, 10),
                     ),
                   ],
-                  border: Border.all(color: const Color(0xFF4E8B97).withOpacity(0.1)),
+                  border: Border.all(
+                    color: const Color(0xFF4E8B97).withOpacity(0.1),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -315,7 +332,11 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
                             color: const Color(0xFF4E8B97).withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.person, color: Color(0xFF4E8B97), size: 30),
+                          child: const Icon(
+                            Icons.person,
+                            color: Color(0xFF4E8B97),
+                            size: 30,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -332,13 +353,16 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
                               ),
                               Text(
                                 'الرقم القومي: ${child.childNationalId ?? '---'}',
-                                style: GoogleFonts.readexPro(fontSize: 12, color: const Color(0xFF64748B)),
+                                style: GoogleFonts.readexPro(
+                                  fontSize: 12,
+                                  color: const Color(0xFF64748B),
+                                ),
                               ),
                             ],
                           ),
                         ),
                         _buildDataBadge(
-                          child.gender == 'Male' ? 'ذكر' : 'أنثى', 
+                          child.gender == 'Male' ? 'ذكر' : 'أنثى',
                           child.gender == 'Male' ? Colors.blue : Colors.pink,
                         ),
                       ],
@@ -347,21 +371,21 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
                       padding: EdgeInsets.symmetric(vertical: 20),
                       child: Divider(height: 1, color: Color(0xFFF1F5F9)),
                     ),
-                    
+
                     // Detailed Info Grid
                     Row(
                       children: [
                         Expanded(
                           child: _buildInfoItem(
-                            Icons.cake_outlined, 
-                            'تاريخ الميلاد', 
+                            Icons.cake_outlined,
+                            'تاريخ الميلاد',
                             child.birthDate.split('T')[0],
                           ),
                         ),
                         Expanded(
                           child: _buildInfoItem(
-                            Icons.bloodtype_outlined, 
-                            'فصيلة الدم', 
+                            Icons.bloodtype_outlined,
+                            'فصيلة الدم',
                             child.bloodType ?? 'غير محدد',
                           ),
                         ),
@@ -372,23 +396,23 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
                       children: [
                         Expanded(
                           child: _buildInfoItem(
-                            Icons.location_on_outlined, 
-                            'العنوان', 
+                            Icons.location_on_outlined,
+                            'العنوان',
                             '${child.governorate ?? ''} - ${child.city ?? ''}',
                           ),
                         ),
                         Expanded(
                           child: _buildInfoItem(
-                            Icons.family_restroom_outlined, 
-                            'ولي الأمر', 
+                            Icons.family_restroom_outlined,
+                            'ولي الأمر',
                             child.parentFullName ?? 'غير متوفر',
                           ),
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Actions
                     Row(
                       children: [
@@ -476,12 +500,15 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
             children: [
               Text(
                 label,
-                style: GoogleFonts.readexPro(fontSize: 10, color: const Color(0xFF94A3B8)),
+                style: GoogleFonts.readexPro(
+                  fontSize: 10,
+                  color: const Color(0xFF94A3B8),
+                ),
               ),
               Text(
                 value,
                 style: GoogleFonts.readexPro(
-                  fontSize: 12, 
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF334155),
                 ),
@@ -495,7 +522,12 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -627,7 +659,11 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
   }
 
   Widget _buildActivityItem(int index) {
-    final titles = ['تم تسجيل مولود جديد', 'تحديث سجل طبي', 'إصدار شهادة ميلاد'];
+    final titles = [
+      'تم تسجيل مولود جديد',
+      'تحديث سجل طبي',
+      'إصدار شهادة ميلاد',
+    ];
     final subtitles = ['خالد أحمد علي', 'سارة محمود حسن', 'ياسين عمر إبراهيم'];
 
     return Container(
@@ -647,7 +683,11 @@ class _DoctorDashboardViewState extends State<DoctorDashboardView> {
               color: const Color(0xFFF1F5F9),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.history, color: Color(0xFF64748B), size: 20),
+            child: const Icon(
+              Icons.history,
+              color: Color(0xFF64748B),
+              size: 20,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(

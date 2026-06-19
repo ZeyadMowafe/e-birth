@@ -212,7 +212,9 @@ class DoctorProfilePage extends StatelessWidget {
                     _buildInfoTile(
                       Icons.location_on_outlined,
                       'العنوان',
-                      '${profile.governorate}${profile.city != "0" ? "، " + profile.city : ""}${profile.village != "0" ? "، " + profile.village : ""}',
+                      profile.governorate == 'غير متوفر' 
+                          ? 'غير متوفر' 
+                          : '${profile.governorate}${profile.city != "0" ? "، " + profile.city : ""}${profile.village != "0" ? "، " + profile.village : ""}',
                     ),
                   ],
                 ),
