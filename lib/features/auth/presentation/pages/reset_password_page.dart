@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/app_toast.dart';
 import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/reset_password_state.dart';
@@ -9,6 +9,7 @@ import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/core/widgets/custom_text_field.dart';
 import 'package:ebirth/core/widgets/custom_gradient_button.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   final String emailOrNationalId;
@@ -68,19 +69,14 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocListener<ResetPasswordCubit, ResetPasswordState>(
       listener: (context, state) {
         if (state is ResetPasswordSuccess) {
           // Navigate to the visual success screen
           context.pushNamed('reset-password-success');
         } else if (state is ResetPasswordFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          AppToast.error(context, state.message);
         }
       },
       child: BlocBuilder<ResetPasswordCubit, ResetPasswordState>(
@@ -91,8 +87,8 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
             headerCrossAxisAlignment: CrossAxisAlignment.start,
             headerTopPadding: 90.0,
             bottomSheetHeight: MediaQuery.of(context).size.height * 0.72,
-            title: 'تغيير كلمة المرور',
-            subtitle: 'أدخل كلمة المرور الجديدة',
+            title: l10n.resetPasswordTitle,
+            subtitle: l10n.resetPasswordSubtitle,
             child: SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -103,12 +99,12 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                     FadeInLeft(
                       duration: const Duration(milliseconds: 600),
                       child: CustomTextField(
-                        label: 'كلمة المرور الجديدة',
+                        label: l10n.resetPasswordNewPassword,
                         controller: _newPasswordController,
                         obscureText: _obscureNew,
                         textInputAction: TextInputAction.next,
                         textDirection: TextDirection.ltr,
-                        hintText: 'أدخل كلمة المرور الجديدة',
+                        hintText: l10n.resetPasswordNewPasswordHint,
                         prefixIcon: const Icon(
                           Icons.lock_outline,
                           color: Color(0xFF4E8B97),
@@ -125,10 +121,10 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'كلمة المرور مطلوبة';
+                            return l10n.passwordRequired;
                           }
                           if (value.trim().length < 6) {
-                            return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                            return l10n.passwordTooShort;
                           }
                           return null;
                         },
@@ -139,12 +135,12 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 200),
                       child: CustomTextField(
-                        label: 'تأكيد كلمة المرور',
+                        label: l10n.resetPasswordConfirmPassword,
                         controller: _confirmPasswordController,
                         obscureText: _obscureConfirm,
                         textInputAction: TextInputAction.done,
                         textDirection: TextDirection.ltr,
-                        hintText: 'أعد إدخال كلمة المرور الجديدة',
+                        hintText: l10n.resetPasswordConfirmPasswordHint,
                         prefixIcon: const Icon(
                           Icons.lock_outline,
                           color: Color(0xFF4E8B97),
@@ -161,11 +157,11 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'تأكيد كلمة المرور مطلوب';
+                            return l10n.resetPasswordConfirmRequired;
                           }
                           if (value.trim() !=
                               _newPasswordController.text.trim()) {
-                            return 'كلمتا المرور غير متطابقتين';
+                            return l10n.resetPasswordNotMatch;
                           }
                           return null;
                         },
@@ -177,7 +173,7 @@ class _ResetPasswordViewState extends State<_ResetPasswordView> {
                       duration: const Duration(milliseconds: 600),
                       delay: const Duration(milliseconds: 400),
                       child: CustomGradientButton(
-                        text: 'تغيير كلمة المرور',
+                        text: l10n.resetPasswordButton,
                         isLoading: state is ResetPasswordLoading,
                         onPressed: _onSubmit,
                       ),

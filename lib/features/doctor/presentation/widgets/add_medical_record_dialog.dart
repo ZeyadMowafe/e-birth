@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:file_picker/file_picker.dart'; // سأستخدم المتاحة مسبقاً
+import 'package:file_picker/file_picker.dart';
+import 'package:ebirth/core/widgets/app_toast.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 import '../cubit/add_medical_record_cubit.dart';
 import '../cubit/add_medical_record_state.dart';
 
@@ -48,9 +50,8 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
     } catch (e) {
       debugPrint('File Picker Error: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('خطأ في اختيار الملفات: ${e.toString().split(':').last}')),
-        );
+        final l10n = AppLocalizations.of(context)!;
+        AppToast.error(context, l10n.addRecordFileError(e.toString().split(':').last));
       }
     }
   }
@@ -63,6 +64,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       backgroundColor: Colors.white,
@@ -79,7 +81,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'إضافة سجل طبي',
+                      l10n.addRecordTitle,
                       style: GoogleFonts.readexPro(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -94,7 +96,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'للطفل: ${widget.childName}',
+                  l10n.addRecordForChild(widget.childName),
                   style: GoogleFonts.readexPro(
                     fontSize: 14,
                     color: const Color(0xFF64748B),
@@ -103,7 +105,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                 const SizedBox(height: 24),
                 
                 Text(
-                  'اسم الدواء / التشخيص',
+                  l10n.addRecordMedicine,
                   style: GoogleFonts.readexPro(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -114,7 +116,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                 TextFormField(
                   controller: _medicineController,
                   decoration: InputDecoration(
-                    hintText: 'مثال: بنادول للأطفال',
+                    hintText: l10n.addRecordMedicineHint,
                     hintStyle: GoogleFonts.readexPro(fontSize: 13, color: const Color(0xFF94A3B8)),
                     filled: true,
                     fillColor: const Color(0xFFF8FAFC),
@@ -123,12 +125,12 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  validator: (value) => value!.isEmpty ? 'يرجى إدخال الحقل' : null,
+                  validator: (value) => value!.isEmpty ? l10n.addRecordMedicineRequired : null,
                 ),
                 const SizedBox(height: 16),
                 
                 Text(
-                  'الملاحظات الطبية',
+                  l10n.addRecordDescription,
                   style: GoogleFonts.readexPro(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -140,7 +142,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                   controller: _descriptionController,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'اكتب تفاصيل الحالة والتعليمات...',
+                    hintText: l10n.addRecordDescriptionHint,
                     hintStyle: GoogleFonts.readexPro(fontSize: 13, color: const Color(0xFF94A3B8)),
                     filled: true,
                     fillColor: const Color(0xFFF8FAFC),
@@ -149,12 +151,12 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  validator: (value) => value!.isEmpty ? 'يرجى إدخال التفاصيل' : null,
+                  validator: (value) => value!.isEmpty ? l10n.addRecordDescriptionRequired : null,
                 ),
                 const SizedBox(height: 20),
 
                 Text(
-                  'الصور الطبية (إجباري)',
+                  l10n.addRecordImages,
                   style: GoogleFonts.readexPro(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -223,7 +225,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                         const Icon(Icons.add_photo_alternate_outlined, color: Color(0xFF4E8B97)),
                         const SizedBox(height: 4),
                         Text(
-                          'إرفاق صور (أشعة، تحاليل، إلخ)',
+                          l10n.addRecordUploadImages,
                           style: GoogleFonts.readexPro(
                             fontSize: 12,
                             color: const Color(0xFF4E8B97),
@@ -238,14 +240,10 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                 BlocConsumer<AddMedicalRecordCubit, AddMedicalRecordState>(
                   listener: (context, state) {
                     if (state is AddMedicalRecordSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('تمت إضافة السجل بنجاح')),
-                      );
+                      AppToast.success(context, l10n.addRecordSuccess);
                       Navigator.pop(context);
                     } else if (state is AddMedicalRecordError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(state.message)),
-                      );
+                      AppToast.error(context, state.message);
                     }
                   },
                   builder: (context, state) {
@@ -258,9 +256,7 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                             : () {
                                 if (_formKey.currentState!.validate()) {
                                   if (_selectedImagePaths.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('يرجى اختيار صورة واحدة على الأقل')),
-                                    );
+                                    AppToast.error(context, l10n.addRecordImageRequired);
                                     return;
                                   }
                                   
@@ -283,8 +279,8 @@ class _AddMedicalRecordDialogState extends State<AddMedicalRecordDialog> {
                                 height: 24,
                                 child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                               )
-                            : Text(
-                                'حفظ السجل',
+                                : Text(
+                                    l10n.addRecordSubmit,
                                 style: GoogleFonts.readexPro(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,

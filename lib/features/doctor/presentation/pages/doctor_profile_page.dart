@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/helper/auth_token_holder.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class DoctorProfilePage extends StatelessWidget {
   final UserEntity? user;
@@ -17,11 +18,12 @@ class DoctorProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text(
-          'الملف الشخصي للطبيب',
+          l10n.doctorProfileTitle,
           style: GoogleFonts.readexPro(
             color: const Color(0xFF1E293B),
             fontWeight: FontWeight.bold,
@@ -86,6 +88,7 @@ class DoctorProfilePage extends StatelessWidget {
     BuildContext context,
     DoctorProfileEntity profile,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 40),
       child: Column(
@@ -150,7 +153,7 @@ class DoctorProfilePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      'طبيب متخصص',
+                      l10n.doctorSpecialist,
                       style: GoogleFonts.readexPro(
                         color: const Color(0xFF4E8B97),
                         fontSize: 12,
@@ -171,49 +174,49 @@ class DoctorProfilePage extends StatelessWidget {
             child: Column(
               children: [
                 _buildInfoSection(
-                  title: 'المعلومات الشخصية',
+                  title: l10n.doctorPersonalInfo,
                   items: [
                     _buildInfoTile(
                       Icons.badge_outlined,
-                      'الرقم القومي',
+                      l10n.nationalId,
                       profile.nationalId,
                     ),
                     _buildInfoTile(
                       Icons.calendar_today_outlined,
-                      'تاريخ الميلاد',
+                      l10n.birthDate,
                       profile.birthDate.split('T')[0],
                     ),
                     _buildInfoTile(
                       Icons.wc_outlined,
-                      'النوع',
-                      (profile.gender == '0' || profile.gender == 'Male') ? 'ذكر' : 'أنثى',
+                      l10n.gender,
+                      (profile.gender == '0' || profile.gender == 'Male') ? l10n.male : l10n.female,
                     ),
                     _buildInfoTile(
                       Icons.bloodtype_outlined,
-                      'فصيلة الدم',
+                      l10n.bloodType,
                       profile.bloodType.replaceAll('_', ' '),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 _buildInfoSection(
-                  title: 'بيانات التواصل والموقع',
+                  title: l10n.doctorContactInfo,
                   items: [
                     _buildInfoTile(
                       Icons.email_outlined,
-                      'البريد الإلكتروني',
+                      l10n.email,
                       profile.email,
                     ),
                     _buildInfoTile(
                       Icons.phone_outlined,
-                      'رقم الهاتف',
+                      l10n.phoneNumber,
                       profile.phoneNumber,
                     ),
                     _buildInfoTile(
                       Icons.location_on_outlined,
-                      'العنوان',
-                      profile.governorate == 'غير متوفر' 
-                          ? 'غير متوفر' 
+                      l10n.address,
+                      profile.governorate == 'N/A' 
+                          ? l10n.notAvailable 
                           : '${profile.governorate}${profile.city != "0" ? "، " + profile.city : ""}${profile.village != "0" ? "، " + profile.village : ""}',
                     ),
                   ],
@@ -225,7 +228,7 @@ class DoctorProfilePage extends StatelessWidget {
                   duration: const Duration(milliseconds: 800),
                   child: _buildActionTile(
                     Icons.logout_rounded,
-                    'تسجيل الخروج',
+                    l10n.logout,
                     Colors.red,
                     () => _showLogoutDialog(context),
                   ),
@@ -367,19 +370,20 @@ class DoctorProfilePage extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('تسجيل الخروج', style: GoogleFonts.readexPro()),
+        title: Text(l10n.logout, style: GoogleFonts.readexPro()),
         content: Text(
-          'هل أنت متأكد من رغبتك في تسجيل الخروج؟',
+          l10n.confirmLogout,
           style: GoogleFonts.readexPro(),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'إلغاء',
+              l10n.cancel,
               style: GoogleFonts.readexPro(color: const Color(0xFF64748B)),
             ),
           ),
@@ -389,7 +393,7 @@ class DoctorProfilePage extends StatelessWidget {
               context.go('/login');
             },
             child: Text(
-              'تسجيل الخروج',
+              l10n.logout,
               style: GoogleFonts.readexPro(color: Colors.red),
             ),
           ),

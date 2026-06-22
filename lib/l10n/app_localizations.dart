@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_ar.dart';
+import 'app_localizations_en.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,10 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('ar')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('en'),
+  ];
 
   /// No description provided for @appName.
   ///
@@ -477,6 +481,204 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'احتفظ بكافة الفحوصات والتقارير الطبية في مكان واحد آمن'**
   String get onboarding3Desc;
+
+  String get male;
+  String get female;
+  String get notAvailable;
+  String get retry;
+  String get cancel;
+  String get save;
+  String get confirm;
+  String get profile;
+  String get medicalHistory;
+  String get notifications;
+  String get helpAndSupport;
+  String get myChildren;
+  String get search;
+  String get fullName;
+  String get birthDate;
+  String get bloodType;
+  String get governorate;
+  String get city;
+  String get village;
+  String get address;
+  String get age;
+  String get gender;
+  String get noData;
+  String get noChildrenRegistered;
+  String get childInfo;
+  String get parentInfo;
+  String get parentName;
+  String get medicalRecord;
+  String get addMedicalRecord;
+  String get medicalReports;
+  String get diagnosis;
+  String get prescription;
+  String get attachments;
+  String get medicine;
+  String get description;
+  String get images;
+  String get note;
+  String get viewFullFile;
+  String get complete;
+  String get late;
+  String get upcoming;
+  String get vaccinationDate;
+  String get completeVaccination;
+  String get pendingVaccination;
+  String ageYearsMonths(Object years, Object months);
+  String ageMonths(Object months);
+  String get newborn;
+  String get confirmLogout;
+  String get doctorAccount;
+  String get parentAccount;
+
+  String get homeWelcome;
+  String get homeDoctorGreeting;
+  String get homeWelcomeSubtitle;
+  String get homeDoctorTitle;
+  String get homeDoctorDesc;
+  String get homeUnknownUser;
+
+  String get roleSelectionTitle;
+  String get roleSelectionSubtitle;
+  String get roleParent;
+  String get roleParentDesc;
+  String get roleDoctor;
+  String get roleDoctorDesc;
+  String get roleAlreadyHaveAccount;
+  String get roleSignIn;
+
+  String get loginRoleChoiceTitle;
+  String get loginRoleChoiceSubtitle;
+  String get loginAsParent;
+  String get loginAsParentDesc;
+  String get loginAsDoctor;
+  String get loginAsDoctorDesc;
+  String get loginRoleChangeNote;
+
+  String get registerNewAccount;
+  String get registerJoinNow;
+  String get registerSelectBirthDate;
+  String get registerGovernorate;
+  String get registerCity;
+  String get registerVillage;
+  String get registerAttachmentInfo;
+  String get registerUploadAttachment;
+  String get registerAttachmentHint;
+  String get registerDoctorNote;
+  String get registerSelectBirthDateError;
+  String get registerSelectAttachmentError;
+
+  String get loginFormTitle;
+  String get loginFormSubtitle;
+  String get loginFormEmailOrNationalId;
+  String get loginFormEmailOrNationalIdHint;
+  String get loginFormEmailOrNationalIdRequired;
+  String get loginFormCreateAccount;
+
+  String get forgotPasswordEmailLabel;
+  String get forgotPasswordEmailHint;
+  String get forgotPasswordRequired;
+  String get forgotPasswordValidEmail;
+
+  String get passwordResetSuccess;
+  String get passwordResetRedirect;
+
+  String get pendingApprovalTitle;
+  String get pendingApprovalStep1;
+  String get pendingApprovalStep2;
+  String get pendingApprovalStep3;
+  String get pendingApprovalTime;
+  String get pendingApprovalBackToLogin;
+
+  String get resetPasswordTitle;
+  String get resetPasswordSubtitle;
+  String get resetPasswordNewPassword;
+  String get resetPasswordNewPasswordHint;
+  String get resetPasswordConfirmPassword;
+  String get resetPasswordConfirmPasswordHint;
+  String get resetPasswordButton;
+  String get resetPasswordConfirmRequired;
+  String get resetPasswordNotMatch;
+
+  String get doctorProfileTitle;
+  String get doctorSpecialist;
+  String get doctorPersonalInfo;
+  String get doctorContactInfo;
+  String get doctorLogoutConfirm;
+
+  String get doctorDashboardNoApprovedTitle;
+  String get doctorDashboardNoApprovedMsg;
+  String get doctorDashboardNoApprovedTime;
+
+  String get childDetailsTitle;
+  String get childDetailsChildTitle;
+  String get childDetailsBasicInfo;
+  String get childDetailsVaccinations;
+  String get childDetailsMedicalHistory;
+  String get childDetailsPersonalInfo;
+  String get childDetailsMedicalHistoryTitle;
+  String get childDetailsMedicalHistoryDesc;
+  String get childDetailsNoMedicalHistory;
+  String get childDetailsNoMedicalHistoryDesc;
+  String get childDetailsViewReport;
+  String get childDetailsNoDiagnosis;
+  String get childDetailsNoPrescription;
+  String get childDetailsClinicReport;
+  String get childDetailsDosageNote;
+  String get childDetailsNoAttachments;
+
+  String get parentProfileBasicInfo;
+  String get parentProfileContactAddress;
+  String get parentProfileRecords;
+  String get parentProfileViewMyHistory;
+  String get parentProfileHistoryDesc;
+  String get parentProfileEditProfile;
+
+  String get parentDashboardParentNotFound;
+  String get parentDashboardParentNotFoundMsg;
+
+  String otpResendIn(Object seconds);
+
+  String childCardAge(Object age);
+  String get childCardViewProfile;
+
+  String get medicalHistoryTitle;
+  String get medicalHistoryEmpty;
+
+  String get doctorSearchHint;
+  String get doctorSearchResult;
+  String doctorSearchNationalId(Object id);
+  String get doctorSearchParentName;
+  String get doctorSearchAddNote;
+  String get doctorSearchFullProfile;
+  String get doctorSearchBloodType;
+  String get doctorSearchBloodTypeNA;
+  String get doctorSearchAddress;
+
+  String get addRecordTitle;
+  String addRecordForChild(Object name);
+  String get addRecordMedicine;
+  String get addRecordMedicineHint;
+  String get addRecordMedicineRequired;
+  String get addRecordDescription;
+  String get addRecordDescriptionHint;
+  String get addRecordDescriptionRequired;
+  String get addRecordImages;
+  String get addRecordUploadImages;
+  String get addRecordImageRequired;
+  String get addRecordSuccess;
+  String addRecordFileError(Object error);
+  String get addRecordSubmit;
+
+  String get vaccinationNoRecords;
+  String vaccinationDateLabel(Object date);
+  String get vaccinationGoNow;
+  String get vaccinationPending;
+
+  String get splashHealthSystem;
+  String get splashCareMessage;
 }
 
 class _AppLocalizationsDelegate
@@ -490,7 +692,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['ar'].contains(locale.languageCode);
+      <String>['ar', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -501,6 +703,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'ar':
       return AppLocalizationsAr();
+    case 'en':
+      return AppLocalizationsEn();
   }
 
   throw FlutterError(

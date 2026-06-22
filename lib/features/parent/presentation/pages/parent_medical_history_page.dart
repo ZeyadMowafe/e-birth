@@ -6,12 +6,14 @@ import '../cubit/parent_medical_history_state.dart';
 import '../widgets/medical_history_list.dart';
 import '../../../../core/widgets/shimmer_loading.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class ParentMedicalHistoryPage extends StatelessWidget {
   const ParentMedicalHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
@@ -29,7 +31,7 @@ class ParentMedicalHistoryPage extends StatelessWidget {
         title: FadeInDown(
           duration: const Duration(milliseconds: 500),
           child: Text(
-            'تاريخي الطبي',
+            l10n.medicalHistoryTitle,
             style: GoogleFonts.readexPro(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -79,7 +81,7 @@ class ParentMedicalHistoryPage extends StatelessWidget {
                       onPressed: () {
                         // Re-fetch logic can be added here if needed
                       },
-                      child: const Text('إعادة المحاولة'),
+                      child: Text(l10n.retry),
                     ),
                   ],
                 ),
@@ -98,7 +100,7 @@ class ParentMedicalHistoryPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'لا يوجد سجلات طبية مسجلة بعد.',
+                      l10n.medicalHistoryEmpty,
                       style: GoogleFonts.readexPro(
                         color: const Color(0xFF6B7280),
                       ),

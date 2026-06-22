@@ -74,9 +74,9 @@ class DoctorRemoteDataSourceImpl implements DoctorRemoteDataSource {
       }
     } on DioException catch (e) {
       print('[DoctorRemoteDataSource] DioError: ${e.message}');
-      throw ServerException(
-        message: e.message ?? 'حدث خطأ في الاتصال بالسيرفر',
-      );
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'حدث خطأ في الاتصال بالسيرفر';
+      throw ServerException(message: msg);
     } catch (e, stack) {
       print('[DoctorRemoteDataSource] Unexpected Error: $e');
       print('[DoctorRemoteDataSource] StackTrace: $stack');

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class PasswordResetSuccessPage extends StatefulWidget {
   const PasswordResetSuccessPage({super.key});
@@ -25,6 +26,7 @@ class _PasswordResetSuccessPageState extends State<PasswordResetSuccessPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -80,10 +82,10 @@ class _PasswordResetSuccessPageState extends State<PasswordResetSuccessPage> {
               FadeIn(
                 duration: const Duration(milliseconds: 800),
                 delay: const Duration(milliseconds: 400),
-                child: const SizedBox(
-                  width: 294,
-                  child: Text(
-                    'تم تغيير كلمة المرور بنجاح!',
+                  child: SizedBox(
+                    width: 294,
+                    child: Text(
+                      l10n.passwordResetSuccess,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Arial', // User requested Arial
@@ -104,7 +106,7 @@ class _PasswordResetSuccessPageState extends State<PasswordResetSuccessPage> {
                 child: SizedBox(
                   width: 252,
                   child: Text(
-                    'جاري تحويلك لصفحة تسجيل الدخول...',
+                    l10n.passwordResetRedirect,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Arial',

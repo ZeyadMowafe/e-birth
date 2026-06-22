@@ -1,5 +1,6 @@
 import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/features/parent/domain/entities/medical_history_entity.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,6 +28,7 @@ class MedicalHistoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (histories.isEmpty) {
       return Center(
         child: FadeIn(
@@ -49,7 +51,7 @@ class MedicalHistoryList extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'لا يوجد تاريخ طبي مسجل حالياً',
+                l10n.childDetailsNoMedicalHistory,
                 style: GoogleFonts.readexPro(
                   color: const Color(0xFF6B7280),
                   fontSize: 16,
@@ -58,7 +60,7 @@ class MedicalHistoryList extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'سيتم عرض الزيارات الطبية والتشخيصات هنا.',
+                l10n.childDetailsNoMedicalHistoryDesc,
                 style: GoogleFonts.readexPro(
                   color: const Color(0xFF9CA3AF),
                   fontSize: 12,
@@ -112,6 +114,7 @@ class _MedicalHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -246,7 +249,7 @@ class _MedicalHistoryCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'عرض التقرير الطبي الكامل',
+                            l10n.childDetailsViewReport,
                             style: GoogleFonts.readexPro(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
@@ -308,6 +311,7 @@ class _MedicalHistoryCard extends StatelessWidget {
                     Expanded(
                       child: BlocBuilder<MedicalRecordDetailCubit, MedicalRecordDetailState>(
                         builder: (context, state) {
+                          final l10n = AppLocalizations.of(context)!;
                           if (state is MedicalRecordDetailLoading) {
                             return const Center(child: CircularProgressIndicator(color: Color(0xFF3A8F8E)));
                           }
@@ -320,17 +324,17 @@ class _MedicalHistoryCard extends StatelessWidget {
                             controller: scrollController,
                             padding: const EdgeInsets.symmetric(horizontal: 24),
                             children: [
-                              _buildAdvancedHeader(detail),
+                              _buildAdvancedHeader(detail, l10n),
                               const SizedBox(height: 24),
                               
                               FadeInUp(
                                 duration: const Duration(milliseconds: 400),
                                 child: _buildAdvancedSection(
-                                  title: 'التشخيص / الملاحظات',
+                                  title: l10n.diagnosis,
                                   icon: Icons.analytics_outlined,
                                   color: const Color(0xFFDBEAFE),
                                   iconColor: const Color(0xFF2563EB),
-                                  content: detail.description.isNotEmpty ? detail.description : 'لا يوجد تشخيص مسجل.',
+                                  content: detail.description.isNotEmpty ? detail.description : l10n.childDetailsNoDiagnosis,
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -338,21 +342,22 @@ class _MedicalHistoryCard extends StatelessWidget {
                               FadeInUp(
                                 duration: const Duration(milliseconds: 500),
                                 child: _buildAdvancedSection(
-                                  title: 'الوصفة العلاجية',
+                                  title: l10n.prescription,
                                   icon: Icons.medication_liquid_outlined,
                                   color: const Color(0xFFF0FDF4),
                                   iconColor: const Color(0xFF16A34A),
                                   content: (detail.medicine != null && detail.medicine!.isNotEmpty) 
                                       ? detail.medicine! 
-                                      : 'لا يوجد وصف علاجي.',
+                                      : l10n.childDetailsNoPrescription,
                                   isPrescription: true,
+                                  l10n: l10n,
                                 ),
                               ),
                               const SizedBox(height: 16),
                               
                               FadeInUp(
                                 duration: const Duration(milliseconds: 600),
-                                child: _buildAttachmentsSection(),
+                                child: _buildAttachmentsSection(l10n),
                               ),
                               const SizedBox(height: 40),
                             ],
@@ -370,7 +375,7 @@ class _MedicalHistoryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAdvancedHeader(dynamic detail) {
+  Widget _buildAdvancedHeader(dynamic detail, AppLocalizations l10n) {
     return Column(
       children: [
         Row(
@@ -407,7 +412,7 @@ class _MedicalHistoryCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'تقرير زيارة عيادة',
+                    l10n.childDetailsClinicReport,
                     style: GoogleFonts.readexPro(fontSize: 12, color: const Color(0xFF6B7280)),
                   ),
                 ],
@@ -443,6 +448,7 @@ class _MedicalHistoryCard extends StatelessWidget {
     required Color iconColor,
     required String content,
     bool isPrescription = false,
+    AppLocalizations? l10n,
   }) {
     return Container(
       width: double.infinity,
@@ -497,7 +503,7 @@ class _MedicalHistoryCard extends StatelessWidget {
                 const Icon(Icons.info_outline, size: 14, color: Color(0xFF9CA3AF)),
                 const SizedBox(width: 6),
                 Text(
-                  'يرجى اتباع الجرعات الموصوفة بدقة.',
+                  l10n?.childDetailsDosageNote ?? 'يرجى اتباع الجرعات الموصوفة بدقة.',
                   style: GoogleFonts.readexPro(fontSize: 10, color: const Color(0xFF9CA3AF)),
                 ),
               ],
@@ -508,7 +514,7 @@ class _MedicalHistoryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAttachmentsSection() {
+  Widget _buildAttachmentsSection(AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -524,7 +530,7 @@ class _MedicalHistoryCard extends StatelessWidget {
               const Icon(Icons.attach_file, color: Color(0xFF6B7280), size: 18),
               const SizedBox(width: 8),
               Text(
-                'المرفقات والأشعات',
+                l10n.attachments,
                 style: GoogleFonts.readexPro(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -548,7 +554,7 @@ class _MedicalHistoryCard extends StatelessWidget {
                 const Icon(Icons.cloud_off_outlined, color: Color(0xFF9CA3AF), size: 32),
                 const SizedBox(height: 8),
                 Text(
-                  'لا توجد ملفات مرفقة بهذا التقرير',
+                  l10n.childDetailsNoAttachments,
                   style: GoogleFonts.readexPro(fontSize: 12, color: const Color(0xFF9CA3AF)),
                 ),
               ],

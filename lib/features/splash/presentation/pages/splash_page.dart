@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -74,6 +75,7 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -95,10 +97,10 @@ class _SplashPageState extends State<SplashPage>
               child: ScaleTransition(
                 scale: _scaleAnim,
                 child: SizedBox(
-                  width: 300,
-                  height: 300,
+                  width: 200,
+                  height: 200,
                   child: Image.asset(
-                    'assets/images/splash_logo.png',
+                    'assets/icons/logo_only.png',
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -128,7 +130,7 @@ class _SplashPageState extends State<SplashPage>
             FadeTransition(
               opacity: _textFadeAnim,
               child: Text(
-                'نظام إدارة السجل الصحي للأطفال',
+                l10n.splashHealthSystem,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.notoSansArabic(
                   color: Colors.white,
@@ -147,7 +149,7 @@ class _SplashPageState extends State<SplashPage>
               child: FadeTransition(
                 opacity: _textFadeAnim,
                 child: Text(
-                  'رعاية متكاملة لمولودك منذ اللحظة الأولى',
+                  l10n.splashCareMessage,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.notoSansArabic(
                     color: const Color(0xFFFFFFFF).withAlpha(204), // #FFFFFFCC

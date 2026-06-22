@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class PendingApprovalPage extends StatelessWidget {
   const PendingApprovalPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -36,7 +38,7 @@ class PendingApprovalPage extends StatelessWidget {
 
               // ── Title ─────────────────────────────────────────────
               Text(
-                'طلبك قيد المراجعة',
+                l10n.pendingApprovalTitle,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -63,19 +65,19 @@ class PendingApprovalPage extends StatelessWidget {
                   children: [
                     _Step(
                       number: '1',
-                      text: 'تم استلام طلبك وبياناتك بنجاح ✅',
+                      text: l10n.pendingApprovalStep1,
                       done: true,
                     ),
                     const Divider(height: 24),
                     _Step(
                       number: '2',
-                      text: 'مراجعة المستندات من فريق E-Birth',
+                      text: l10n.pendingApprovalStep2,
                       done: false,
                     ),
                     const Divider(height: 24),
                     _Step(
                       number: '3',
-                      text: 'إرسال بريد إلكتروني بنتيجة المراجعة',
+                      text: l10n.pendingApprovalStep3,
                       done: false,
                     ),
                   ],
@@ -106,7 +108,7 @@ class PendingApprovalPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      'سيتم الرد خلال 24-48 ساعة',
+                      l10n.pendingApprovalTime,
                       style: TextStyle(
                         color: const Color(0xFF00897B),
                         fontWeight: FontWeight.w600,
@@ -121,7 +123,7 @@ class PendingApprovalPage extends StatelessWidget {
               // ── Back to Login ──────────────────────────────────────
               ElevatedButton(
                 onPressed: () => context.goNamed('login'),
-                child: const Text('العودة إلى تسجيل الدخول'),
+                child: Text(l10n.pendingApprovalBackToLogin),
               ),
             ],
           ),

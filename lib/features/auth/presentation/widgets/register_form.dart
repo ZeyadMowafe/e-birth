@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/cubit/locale_cubit.dart';
+import 'package:ebirth/core/widgets/app_toast.dart';
 import 'package:ebirth/core/widgets/custom_gradient_button.dart';
 import 'package:ebirth/core/widgets/custom_text_field.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_cubit.dart';
@@ -86,25 +88,16 @@ class _RegisterFormState extends State<RegisterForm> {
       initialDate: DateTime(1995, 1, 1),
       firstDate: DateTime(1940),
       lastDate: DateTime.now().subtract(const Duration(days: 365 * 10)),
-      locale: const Locale('ar'),
+      locale: context.read<LocaleCubit>().state,
     );
     if (picked != null) setState(() => _birthDate = picked);
   }
 
   void _onSubmit() {
+    final l10n = AppLocalizations.of(context)!;
     if (_formKey.currentState?.validate() ?? false) {
       if (_birthDate == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('الرجاء تحديد تاريخ الميلاد'),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
+        AppToast.error(context, l10n.registerSelectBirthDateError);
         return;
       }
       final birthDateStr =
@@ -226,14 +219,14 @@ class _RegisterFormState extends State<RegisterForm> {
                 onTap: _pickBirthDate,
                 child: AbsorbPointer(
                   child: CustomTextField(
-                    label: 'تاريخ الميلاد',
+                    label: l10n.birthDate,
                     controller: TextEditingController(
                       text: _birthDate == null
                           ? ''
                           : '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}',
                     ),
                     hintText: _birthDate == null
-                        ? 'اختر تاريخ الميلاد'
+                        ? l10n.registerSelectBirthDate
                         : '${_birthDate!.year}/${_birthDate!.month}/${_birthDate!.day}',
                     prefixIcon: const Icon(
                       Icons.calendar_today_outlined,
@@ -252,8 +245,8 @@ class _RegisterFormState extends State<RegisterForm> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'النوع',
+                  Text(
+                    l10n.gender,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
@@ -264,13 +257,13 @@ class _RegisterFormState extends State<RegisterForm> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<int>(
                     value: _gender,
-                    decoration: const InputDecoration(
-                      hintText: 'النوع',
+                    decoration: InputDecoration(
+                      hintText: l10n.gender,
                       prefixIcon: Icon(Icons.wc_outlined, color: Color(0xFF4E8B97)),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 1, child: Text('ذكر')),
-                      DropdownMenuItem(value: 2, child: Text('أنثى')),
+                    items: [
+                      DropdownMenuItem(value: 1, child: Text(l10n.male)),
+                      DropdownMenuItem(value: 2, child: Text(l10n.female)),
                     ],
                     onChanged: (v) => setState(() => _gender = v!),
                   ),
@@ -282,8 +275,8 @@ class _RegisterFormState extends State<RegisterForm> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'فصيلة الدم',
+                  Text(
+                    l10n.bloodType,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
@@ -294,8 +287,8 @@ class _RegisterFormState extends State<RegisterForm> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<int>(
                     value: _bloodType,
-                    decoration: const InputDecoration(
-                      hintText: 'فصيلة الدم',
+                    decoration: InputDecoration(
+                      hintText: l10n.bloodType,
                       prefixIcon: Icon(
                         Icons.bloodtype_outlined,
                         color: Color(0xFF4E8B97),
@@ -317,8 +310,8 @@ class _RegisterFormState extends State<RegisterForm> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'المحافظة',
+                  Text(
+                    l10n.registerGovernorate,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
@@ -329,8 +322,8 @@ class _RegisterFormState extends State<RegisterForm> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<int>(
                     value: _governorate,
-                    decoration: const InputDecoration(
-                      hintText: 'المحافظة',
+                    decoration: InputDecoration(
+                      hintText: l10n.registerGovernorate,
                       prefixIcon: Icon(
                         Icons.location_city_outlined,
                         color: Color(0xFF4E8B97),
@@ -350,11 +343,11 @@ class _RegisterFormState extends State<RegisterForm> {
               const SizedBox(height: 12),
 
               CustomTextField(
-                label: 'المدينة / المركز',
+                label: l10n.registerCity,
                 controller: _cityController,
                 textInputAction: TextInputAction.next,
                 textAlign: TextAlign.right,
-                hintText: 'المدينة / المركز',
+                hintText: l10n.registerCity,
                 prefixIcon: const Icon(
                   Icons.map_outlined,
                   color: Color(0xFF4E8B97),
@@ -363,11 +356,11 @@ class _RegisterFormState extends State<RegisterForm> {
               const SizedBox(height: 12),
 
               CustomTextField(
-                label: 'القرية / الحي',
+                label: l10n.registerVillage,
                 controller: _villageController,
                 textInputAction: TextInputAction.next,
                 textAlign: TextAlign.right,
-                hintText: 'القرية / الحي',
+                hintText: l10n.registerVillage,
                 prefixIcon: const Icon(
                   Icons.home_outlined,
                   color: Color(0xFF4E8B97),

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ebirth/features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/forgot_password_state.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/app_toast.dart';
 import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/auth/presentation/cubit/verify_otp_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/verify_otp_state.dart';
@@ -117,34 +118,16 @@ class _VerifyOtpViewState extends State<_VerifyOtpView> {
                 },
               );
             } else if (state is VerifyOtpFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: AppColors.error,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+              AppToast.error(context, state.message);
             }
           },
         ),
         BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
           listener: (context, state) {
             if (state is ForgotPasswordSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l10n.resetLinkSent),
-                  backgroundColor: AppColors.success,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+              AppToast.success(context, l10n.resetLinkSent);
             } else if (state is ForgotPasswordFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: AppColors.error,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+              AppToast.error(context, state.message);
             }
           },
         ),
@@ -267,7 +250,7 @@ class _VerifyOtpViewState extends State<_VerifyOtpView> {
                           onTap: _secondsRemaining > 0 ? null : _onResend,
                           child: Text(
                             _secondsRemaining > 0
-                                ? 'إعادة الإرسال خلال $_secondsRemaining ثانية'
+                                ? l10n.otpResendIn(_secondsRemaining)
                                 : l10n.resendCode,
                             style: GoogleFonts.arimo(
                               color: _secondsRemaining > 0

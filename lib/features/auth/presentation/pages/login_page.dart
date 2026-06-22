@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/app_toast.dart';
 import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/login_state.dart';
@@ -41,34 +42,12 @@ class _LoginView extends StatelessWidget {
             context.goNamed('home', extra: state.user);
           }
         } else if (state is LoginFailure) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(
-                    Icons.error_outline,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(child: Text(state.message)),
-                ],
-              ),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.all(16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              duration: const Duration(seconds: 4),
-            ),
-          );
+          AppToast.error(context, state.message);
         }
       },
       child: TapUnfocus(
         child: AuthLayout(
-          title: 'نظام المواليد الإلكتروني',
+          title: l10n.ebirth,
           subtitle: 'E-Birth System',
           child: SingleChildScrollView(
             child: Column(
@@ -86,7 +65,7 @@ class _LoginView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'ليس لديك حساب؟', // l10n.dontHaveAccount
+                        l10n.dontHaveAccount,
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,
@@ -94,9 +73,9 @@ class _LoginView extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () => context.pushNamed('role-selection'),
-                        child: const Text(
-                          'سجل الأن', // l10n.signUpNow
-                          style: TextStyle(
+                        child: Text(
+                          l10n.signUpNow,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
                             fontSize: 14,

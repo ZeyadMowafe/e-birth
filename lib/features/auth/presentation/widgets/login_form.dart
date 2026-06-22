@@ -95,8 +95,8 @@ class _LoginFormState extends State<LoginForm> {
               ),
 
               // ── Form Titles ─────────────────────────────────────────
-              const Text(
-                'تسجيل الدخول',
+              Text(
+                l10n.loginFormTitle,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
@@ -105,8 +105,8 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'أهلاً بعودتك، سجل دخولك للمتابعة',
+              Text(
+                l10n.loginFormSubtitle,
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
@@ -118,19 +118,19 @@ class _LoginFormState extends State<LoginForm> {
 
               // ── Email / National ID Field ─────────────────────────
               CustomTextField(
-                label: 'البريد الإلكتروني أو الرقم القومي',
+                label: l10n.loginFormEmailOrNationalId,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 textDirection: TextDirection.ltr,
-                hintText: 'أدخل البريد الإلكتروني أو الرقم القومي',
+                hintText: l10n.loginFormEmailOrNationalIdHint,
                 prefixIcon: const Icon(
                   Icons.person_outline,
                   color: Color(0xFF4E8B97),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'الرجاء إدخال البريد الإلكتروني أو الرقم القومي';
+                    return l10n.loginFormEmailOrNationalIdRequired;
                   }
                   return null;
                 },
@@ -139,7 +139,7 @@ class _LoginFormState extends State<LoginForm> {
 
               // ── Password Field ────────────────────────────────────
               CustomTextField(
-                label: 'كلمة المرور',
+                label: l10n.password,
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 textInputAction: TextInputAction.done,
@@ -173,7 +173,7 @@ class _LoginFormState extends State<LoginForm> {
               BlocBuilder<LoginCubit, LoginState>(
                 builder: (context, state) {
                   return CustomGradientButton(
-                    text: 'تسجيل الدخول',
+                    text: l10n.loginButton,
                     isLoading: state is LoginLoading,
                     onPressed: _onSubmit,
                   );
@@ -194,8 +194,8 @@ class _LoginFormState extends State<LoginForm> {
                       minimumSize: const Size(50, 30),
                       alignment: Alignment.centerLeft,
                     ),
-                    child: const Text(
-                      'إنشاء حساب جديد',
+                    child: Text(
+                      l10n.loginFormCreateAccount,
                       style: TextStyle(
                         fontFamily: 'Arial',
                         fontWeight: FontWeight.w400,
@@ -214,8 +214,8 @@ class _LoginFormState extends State<LoginForm> {
                       minimumSize: const Size(50, 30),
                       alignment: Alignment.centerRight,
                     ),
-                    child: const Text(
-                      'نسيت كلمة المرور؟',
+                    child: Text(
+                      l10n.forgotPassword,
                       style: TextStyle(
                         fontFamily: 'Arial',
                         fontWeight: FontWeight.w400,

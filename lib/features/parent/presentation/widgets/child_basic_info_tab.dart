@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/child_entity.dart';
 
@@ -10,45 +11,46 @@ class ChildBasicInfoTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildSectionCard(
-            title: 'بيانات الطفل الأساسية',
+            title: l10n.childDetailsBasicInfo,
             icon: Icons.child_care,
             color: const Color(0xFF4EBCBA),
             children: [
-              _buildInfoRow('الاسم بالكامل', child.fullName),
-              _buildInfoRow('الرقم القومي', child.childNationalId ?? 'غير متوفر'),
-              _buildInfoRow('تاريخ الميلاد', child.birthDate),
-              _buildInfoRow('العمر', '\${child.ageWithYears} سنة و \${child.ageWithMonths} شهر'),
-              _buildInfoRow('النوع', child.gender == 'Male' ? 'ذكر' : (child.gender == 'Female' ? 'أنثى' : child.gender)),
-              _buildInfoRow('فصيلة الدم', child.bloodType?.replaceAll('_Positive', '+').replaceAll('_Negative', '-') ?? 'غير متوفر'),
+              _buildInfoRow(l10n.fullName, child.fullName),
+              _buildInfoRow(l10n.nationalId, child.childNationalId ?? l10n.notAvailable),
+              _buildInfoRow(l10n.birthDate, child.birthDate),
+              _buildInfoRow(l10n.age, l10n.ageYearsMonths(child.ageWithYears, child.ageWithMonths)),
+              _buildInfoRow(l10n.gender, child.gender == 'Male' ? l10n.male : (child.gender == 'Female' ? l10n.female : child.gender)),
+              _buildInfoRow(l10n.bloodType, child.bloodType?.replaceAll('_Positive', '+').replaceAll('_Negative', '-') ?? l10n.notAvailable),
             ],
           ),
           const SizedBox(height: 16),
           _buildSectionCard(
-            title: 'بيانات ولي الأمر',
+            title: l10n.parentInfo,
             icon: Icons.family_restroom,
             color: const Color(0xFF3A8F8E),
             children: [
-              _buildInfoRow('اسم ولي الأمر', child.parentFullName ?? 'غير متوفر'),
-              _buildInfoRow('الرقم القومي', child.parentNationalId ?? 'غير متوفر'),
-              _buildInfoRow('رقم الهاتف', child.parentPhoneNumber ?? 'غير متوفر'),
-              _buildInfoRow('البريد الإلكتروني', child.parentEmail ?? 'غير متوفر', isLast: true),
+              _buildInfoRow(l10n.parentName, child.parentFullName ?? l10n.notAvailable),
+              _buildInfoRow(l10n.nationalId, child.parentNationalId ?? l10n.notAvailable),
+              _buildInfoRow(l10n.phoneNumber, child.parentPhoneNumber ?? l10n.notAvailable),
+              _buildInfoRow(l10n.email, child.parentEmail ?? l10n.notAvailable, isLast: true),
             ],
           ),
           const SizedBox(height: 16),
           _buildSectionCard(
-            title: 'العنوان',
+            title: l10n.address,
             icon: Icons.location_on_outlined,
             color: const Color(0xFF1DA8C4),
             children: [
-              _buildInfoRow('المحافظة', child.governorate ?? 'غير متوفر'),
-              _buildInfoRow('المدينة / المركز', child.city ?? 'غير متوفر'),
-              _buildInfoRow('القرية / الحي', child.village ?? 'غير متوفر', isLast: true),
+              _buildInfoRow(l10n.governorate, child.governorate ?? l10n.notAvailable),
+              _buildInfoRow(l10n.city, child.city ?? l10n.notAvailable),
+              _buildInfoRow(l10n.village, child.village ?? l10n.notAvailable, isLast: true),
             ],
           ),
         ],

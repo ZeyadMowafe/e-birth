@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ebirth/core/widgets/tap_unfocus.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class AuthLayout extends StatelessWidget {
   final Widget child;
@@ -19,7 +20,7 @@ class AuthLayout extends StatelessWidget {
   const AuthLayout({
     super.key,
     required this.child,
-    this.title = 'نظام المواليد الإلكتروني',
+    this.title = 'E-Birth',
     this.subtitle = 'E-Birth System',
     this.showLogo = true,
     this.titleStyle,
@@ -37,6 +38,7 @@ class AuthLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TapUnfocus(
       child: Scaffold(
         body: Stack(
@@ -72,38 +74,12 @@ class AuthLayout extends StatelessWidget {
                       crossAxisAlignment: headerCrossAxisAlignment,
                       children: [
                         if (showLogo) ...[
-                          // White Box (Logo area)
                           BounceInDown(
                             duration: const Duration(milliseconds: 1200),
-                            child: Container(
-                              width: 96,
-                              height: 96,
-                              padding: const EdgeInsets.only(left: 0.02),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(24),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x1A000000), // #0000001A
-                                    blurRadius: 6,
-                                    offset: Offset(0, 4),
-                                    spreadRadius: -4,
-                                  ),
-                                  BoxShadow(
-                                    color: Color(0x1A000000), // #0000001A
-                                    blurRadius: 15,
-                                    offset: Offset(0, 10),
-                                    spreadRadius: -3,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/images/splash_logo.png',
-                                  width: 60,
-                                  height: 60,
-                                ),
-                              ),
+                            child: Image.asset(
+                              'assets/icons/logo_only.png',
+                              width: 100,
+                              height: 100,
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -114,7 +90,7 @@ class AuthLayout extends StatelessWidget {
                           duration: const Duration(milliseconds: 800),
                           delay: const Duration(milliseconds: 200),
                           child: Text(
-                            title,
+                            title ?? l10n.ebirth,
                             textAlign:
                                 headerCrossAxisAlignment ==
                                     CrossAxisAlignment.center

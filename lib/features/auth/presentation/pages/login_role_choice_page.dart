@@ -5,6 +5,7 @@ import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class LoginRoleChoicePage extends StatelessWidget {
   final UserEntity user;
@@ -13,6 +14,7 @@ class LoginRoleChoicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AuthLayout(
       showLogo: false,
       showBackButton: true,
@@ -20,7 +22,7 @@ class LoginRoleChoicePage extends StatelessWidget {
       bottomSheetHeight: MediaQuery.of(context).size.height * 0.72,
       headerTopPadding: 60.0,
       bottomSheetPadding: const EdgeInsets.only(top: 32, left: 24, right: 24),
-      title: 'تسجيل الدخول',
+      title: l10n.loginRoleChoiceTitle,
       titleStyle: const TextStyle(
         fontFamily: 'Arial',
         fontWeight: FontWeight.w700,
@@ -28,7 +30,7 @@ class LoginRoleChoicePage extends StatelessWidget {
         height: 1.2,
         color: Colors.white,
       ),
-      subtitle: 'اختر وضع الدخول المناسب لك للمتابعة',
+      subtitle: l10n.loginRoleChoiceSubtitle,
       subtitleStyle: const TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 16,
@@ -51,8 +53,8 @@ class LoginRoleChoicePage extends StatelessWidget {
                   // ── Parent Mode Card ─────────────────────────────────────
                   _ChoiceCard(
                     icon: Icons.family_restroom_outlined,
-                    title: 'دخول كـ ولي أمر',
-                    subtitle: 'استخدام التطبيق لمتابعة أطفالك والتقارير الطبية',
+                    title: l10n.loginAsParent,
+                    subtitle: l10n.loginAsParentDesc,
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -67,8 +69,8 @@ class LoginRoleChoicePage extends StatelessWidget {
                   // ── Doctor Mode Card ─────────────────────────────────────
                   _ChoiceCard(
                     icon: Icons.medical_services_outlined,
-                    title: 'دخول كـ طبيب',
-                    subtitle: 'استخدام التطبيق لإدارة السجلات الطبية للمرضى',
+                    title: l10n.loginAsDoctor,
+                    subtitle: l10n.loginAsDoctorDesc,
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -84,7 +86,7 @@ class LoginRoleChoicePage extends StatelessWidget {
                     delay: const Duration(milliseconds: 800),
                     child: Center(
                       child: Text(
-                        'يمكنك دائماً تغيير وضع الدخول من الإعدادات',
+                        l10n.loginRoleChangeNote,
                         style: TextStyle(
                           color: AppColors.textSecondary.withOpacity(0.6),
                           fontSize: 12,

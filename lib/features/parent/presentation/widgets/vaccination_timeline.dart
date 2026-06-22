@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/vaccination_entity.dart';
 
@@ -12,10 +13,11 @@ class VaccinationTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (vaccinations.isEmpty) {
       return Center(
         child: Text(
-          'لا توجد سجلات تطعيم.',
+          l10n.vaccinationNoRecords,
           style: GoogleFonts.readexPro(color: AppColors.textSecondary),
         ),
       );
@@ -68,6 +70,7 @@ class _VaccinationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final status = _status;
     Color statusColor;
     String statusText;
@@ -76,17 +79,17 @@ class _VaccinationCard extends StatelessWidget {
     switch (status) {
       case VaccinationStatus.completed:
         statusColor = const Color(0xFF10B981); // Emerald 500
-        statusText = 'مكتمل';
+        statusText = l10n.complete;
         statusIcon = Icons.check_circle_outline;
         break;
       case VaccinationStatus.delayed:
         statusColor = const Color(0xFFEF4444); // Red 500
-        statusText = 'متأخر';
+        statusText = l10n.late;
         statusIcon = Icons.warning_amber_rounded;
         break;
       case VaccinationStatus.upcoming:
         statusColor = const Color(0xFF3B82F6); // Blue 500
-        statusText = 'قادم';
+        statusText = l10n.upcoming;
         statusIcon = Icons.schedule;
         break;
     }
@@ -164,7 +167,7 @@ class _VaccinationCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   if (status == VaccinationStatus.completed)
                     Text(
-                      'تم التطعيم في ${_formatDate(vaccine.date)}',
+                      l10n.vaccinationDateLabel(_formatDate(vaccine.date)),
                       style: GoogleFonts.readexPro(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -173,7 +176,7 @@ class _VaccinationCard extends StatelessWidget {
                     )
                   else if (status == VaccinationStatus.delayed)
                     Text(
-                      'يرجى التوجه لتلقي التطعيم',
+                      l10n.vaccinationGoNow,
                       style: GoogleFonts.readexPro(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -182,7 +185,7 @@ class _VaccinationCard extends StatelessWidget {
                     )
                   else if (status == VaccinationStatus.upcoming)
                     Text(
-                      'موعد التطعيم في الانتظار',
+                      l10n.vaccinationPending,
                       style: GoogleFonts.readexPro(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,

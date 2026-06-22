@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class ParentDashboardView extends StatefulWidget {
   final String parentId;
@@ -44,7 +45,8 @@ class _ParentDashboardViewState extends State<ParentDashboardView> {
     return BlocProvider.value(
       value: _cubit,
       child: BlocBuilder<ParentCubit, ParentState>(
-        builder: (context, state) {
+          builder: (context, state) {
+            final l10n = AppLocalizations.of(context)!;
           if (state is ParentLoading || state is ParentInitial) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,6 +63,10 @@ class _ParentDashboardViewState extends State<ParentDashboardView> {
               ],
             );
           } else if (state is ParentError) {
+            final isParentNotFound = state.message.toLowerCase().contains('parent not found');
+            if (isParentNotFound) {
+              return _buildParentNotFound();
+            }
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -71,18 +77,21 @@ class _ParentDashboardViewState extends State<ParentDashboardView> {
                     color: AppColors.error,
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'حدث خطأ في جلب البيانات\n${state.message}',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.readexPro(
-                      color: AppColors.textPrimary,
-                      fontSize: 14,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      state.message,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.readexPro(
+                        color: AppColors.textPrimary,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => _cubit.getParentData(widget.parentId),
-                    child: const Text('إعادة المحاولة'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
@@ -96,7 +105,7 @@ class _ParentDashboardViewState extends State<ParentDashboardView> {
                 child: Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Text(
-                    'لا يوجد أطفال مسجلين حالياً',
+                    l10n.noChildrenRegistered,
                     style: GoogleFonts.readexPro(
                       color: AppColors.textSecondary,
                       fontSize: 14,
@@ -124,7 +133,7 @@ class _ParentDashboardViewState extends State<ParentDashboardView> {
                     FadeInRight(
                       duration: const Duration(milliseconds: 500),
                       child: Text(
-                        'أطفالي',
+                        l10n.myChildren,
                         style: GoogleFonts.readexPro(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
@@ -188,6 +197,58 @@ class _ParentDashboardViewState extends State<ParentDashboardView> {
           }
           return const SizedBox.shrink();
         },
+      ),
+    );
+  }
+
+  Widget _buildParentNotFound() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: AppColors.error.withAlpha(25),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.search_off_rounded,
+                color: AppColors.error,
+                size: 56,
+              ),
+            ),
+            const SizedBox(height: 28),
+            Text(
+              l10n.parentDashboardParentNotFound,
+              style: GoogleFonts.readexPro(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1F2937),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.parentDashboardParentNotFoundMsg,
+              style: GoogleFonts.readexPro(
+                fontSize: 14,
+                color: const Color(0xFF6B7280),
+                height: 1.6,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => _cubit.getParentData(widget.parentId),
+              child: Text(l10n.retry),
+            ),
+          ],
+        ),
       ),
     );
   }

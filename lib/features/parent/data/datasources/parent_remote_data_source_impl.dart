@@ -58,7 +58,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         throw ServerException(message: 'فشل في جلب البيانات.');
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'حدث خطأ في الاتصال بالخادم');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'حدث خطأ في الاتصال بالخادم';
+      throw ServerException(message: msg);
     }
   }
 
@@ -82,7 +84,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         throw ServerException(message: 'فشل في جلب البيانات.');
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'Server error occurred');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'Server error occurred';
+      throw ServerException(message: msg);
     }
   }
 
@@ -100,7 +104,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         throw ServerException(message: 'Failed to load child details.');
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'Server error occurred');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'Server error occurred';
+      throw ServerException(message: msg);
     }
   }
 
@@ -126,7 +132,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         return []; // Or throw an exception
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'Server error occurred');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'Server error occurred';
+      throw ServerException(message: msg);
     }
   }
 
@@ -154,7 +162,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         return [];
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'Server error occurred');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'Server error occurred';
+      throw ServerException(message: msg);
     }
   }
 
@@ -182,7 +192,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         return [];
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'Server error occurred');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'Server error occurred';
+      throw ServerException(message: msg);
     }
   }
 
@@ -203,7 +215,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         throw ServerException(message: 'فشل في جلب السجل الطبي المحدد.');
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'Server error occurred');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'Server error occurred';
+      throw ServerException(message: msg);
     }
   }
 
@@ -224,7 +238,9 @@ class ParentRemoteDataSourceImpl implements ParentRemoteDataSource {
         throw ServerException(message: 'فشل في جلب السجل الطبي المحدد.');
       }
     } on DioException catch (e) {
-      throw ServerException(message: e.message ?? 'Server error occurred');
+      final errorData = e.response?.data;
+      final msg = errorData?['errors']?.toString() ?? e.message ?? 'Server error occurred';
+      throw ServerException(message: msg);
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/app_toast.dart';
 import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/forgot_password_state.dart';
@@ -54,26 +54,13 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
     return BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
       listener: (context, state) {
         if (state is ForgotPasswordSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.resetLinkSent),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-          // Navigate to OTP screen
+          AppToast.success(context, l10n.resetLinkSent);
           context.pushNamed(
             'verify-otp',
             queryParameters: {'identifier': _emailController.text.trim()},
           );
         } else if (state is ForgotPasswordFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          AppToast.error(context, state.message);
         }
       },
       builder: (context, state) {
@@ -108,19 +95,19 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                   FadeInLeft(
                     duration: const Duration(milliseconds: 600),
                     child: CustomTextField(
-                      label: 'البريد الإلكتروني   ',
+                      label: l10n.forgotPasswordEmailLabel,
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.done,
                       textDirection: TextDirection.ltr,
-                      hintText: 'أدخل البريد الإلكتروني',
+                      hintText: l10n.forgotPasswordEmailHint,
                       prefixIcon: const Icon(
                         Icons.person_outline,
                         color: Color(0xFF4E8B97),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'البريد الإلكتروني أو الرقم القومي مطلوب';
+                          return l10n.forgotPasswordRequired;
                         }
                         final val = value.trim();
                         final emailRegex = RegExp(
@@ -129,7 +116,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                         final idRegex = RegExp(r'^\d{14}$');
 
                         if (!emailRegex.hasMatch(val)) {
-                          return 'يرجى إدخال بريد إلكتروني صحيح';
+                          return l10n.forgotPasswordValidEmail;
                         }
                         return null;
                       },

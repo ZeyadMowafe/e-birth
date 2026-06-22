@@ -49,6 +49,7 @@ dependencies:
   shimmer: ^3.0.0
   flutter_staggered_animations: ^1.1.1
   animate_do: ^3.3.4
+  flutter_native_splash: ^2.4.4
 
 
 

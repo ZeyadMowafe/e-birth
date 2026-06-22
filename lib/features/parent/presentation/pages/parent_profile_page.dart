@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/shimmer_loading.dart';
@@ -19,6 +20,7 @@ class ParentProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
@@ -30,7 +32,7 @@ class ParentProfilePage extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'الملف الشخصي',
+          l10n.profile,
           style: GoogleFonts.readexPro(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -72,6 +74,7 @@ class ParentProfilePage extends StatelessWidget {
   }
 
   Widget _buildErrorState(BuildContext context, String message) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -92,7 +95,7 @@ class ParentProfilePage extends StatelessWidget {
                   context.read<ParentProfileCubit>().fetchParentProfile(user!.id);
                 }
               },
-              child: const Text('إعادة المحاولة'),
+              child: Text(l10n.retry),
             ),
           ],
         ),
@@ -101,11 +104,12 @@ class ParentProfilePage extends StatelessWidget {
   }
 
   Widget _buildProfileContent(BuildContext context, ParentDetailsEntity details) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: Column(
         children: [
           // Header Section
-          _buildHeader(details),
+          _buildHeader(context, details),
           
           // Details Sections
           Padding(
@@ -122,33 +126,33 @@ class ParentProfilePage extends StatelessWidget {
                     const SizedBox(height: 24),
                     
                     // Basic Information Section
-                    _buildSectionTitle('المعلومات الأساسية'),
+                    _buildSectionTitle(l10n.parentProfileBasicInfo),
                     const SizedBox(height: 12),
-                    _buildInfoCard(Icons.person_outline, 'الاسم بالكامل', details.fullName),
-                    _buildInfoCard(Icons.badge_outlined, 'الرقم القومي', details.nationalId),
+                    _buildInfoCard(context, Icons.person_outline, l10n.fullName, details.fullName),
+                    _buildInfoCard(context, Icons.badge_outlined, l10n.nationalId, details.nationalId),
                     Row(
                       children: [
-                        Expanded(child: _buildInfoCard(Icons.cake_outlined, 'تاريخ الميلاد', details.birthDate.split('T')[0])),
+                        Expanded(child: _buildInfoCard(context, Icons.cake_outlined, l10n.birthDate, details.birthDate.split('T')[0])),
                         const SizedBox(width: 12),
-                        Expanded(child: _buildInfoCard(Icons.wc_outlined, 'الجنس', details.gender == 'Male' ? 'ذكر' : 'أنثى')),
+                        Expanded(child: _buildInfoCard(context, Icons.wc_outlined, l10n.gender, details.gender == 'Male' ? l10n.male : l10n.female)),
                       ],
                     ),
-                    _buildInfoCard(Icons.bloodtype_outlined, 'فصيلة الدم', details.bloodType.replaceAll('_', ' ')),
+                    _buildInfoCard(context, Icons.bloodtype_outlined, l10n.bloodType, details.bloodType.replaceAll('_', ' ')),
 
                     const SizedBox(height: 24),
                     
                     // Contact & Location Section
-                    _buildSectionTitle('بيانات التواصل والعنوان'),
+                    _buildSectionTitle(l10n.parentProfileContactAddress),
                     const SizedBox(height: 12),
-                    _buildInfoCard(Icons.phone_outlined, 'رقم الهاتف', details.phoneNumber),
-                    _buildInfoCard(Icons.email_outlined, 'البريد الإلكتروني', details.email),
-                    _buildInfoCard(Icons.map_outlined, 'المحافظة / المدينة', '${details.governorate} - ${details.city}'),
-                    _buildInfoCard(Icons.home_outlined, 'القرية / العنوان', details.village),
+                    _buildInfoCard(context, Icons.phone_outlined, l10n.phoneNumber, details.phoneNumber),
+                    _buildInfoCard(context, Icons.email_outlined, l10n.email, details.email),
+                    _buildInfoCard(context, Icons.map_outlined, '${l10n.governorate} / ${l10n.city}', '${details.governorate} - ${details.city}'),
+                    _buildInfoCard(context, Icons.home_outlined, '${l10n.village} / ${l10n.address}', details.village),
 
                     const SizedBox(height: 24),
                     
                     // Shortcuts Section
-                    _buildSectionTitle('السجلات والخدمات'),
+                    _buildSectionTitle(l10n.parentProfileRecords),
                     const SizedBox(height: 12),
                     _buildMedicalHistoryShortcut(context),
 
@@ -165,7 +169,8 @@ class ParentProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(ParentDetailsEntity details) {
+  Widget _buildHeader(BuildContext context, ParentDetailsEntity details) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       color: Colors.white,
@@ -202,7 +207,7 @@ class ParentProfilePage extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'ولي أمر',
+              l10n.parentAccount,
               style: GoogleFonts.readexPro(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -239,7 +244,8 @@ class ParentProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(IconData icon, String label, String value) {
+  Widget _buildInfoCard(BuildContext context, IconData icon, String label, String value) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -274,7 +280,7 @@ class ParentProfilePage extends StatelessWidget {
                   style: GoogleFonts.readexPro(fontSize: 11, color: const Color(0xFF9CA3AF)),
                 ),
                 Text(
-                  value.isNotEmpty ? value : 'غير متوفر',
+                  value.isNotEmpty ? value : l10n.notAvailable,
                   style: GoogleFonts.readexPro(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -290,6 +296,7 @@ class ParentProfilePage extends StatelessWidget {
   }
 
   Widget _buildMedicalHistoryShortcut(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return InkWell(
       onTap: () => context.pushNamed('parent-medical-history', extra: user),
       borderRadius: BorderRadius.circular(16),
@@ -309,11 +316,11 @@ class ParentProfilePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'عرض سجلي الطبي الشخصي',
+                    l10n.parentProfileViewMyHistory,
                     style: GoogleFonts.readexPro(fontSize: 13, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'الوصفات، الفحوصات والتقارير الطبية',
+                    l10n.parentProfileHistoryDesc,
                     style: GoogleFonts.readexPro(fontSize: 10, color: Colors.grey),
                   ),
                 ],
@@ -327,6 +334,7 @@ class ParentProfilePage extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         SizedBox(
@@ -337,7 +345,7 @@ class ParentProfilePage extends StatelessWidget {
               // Edit profile placeholder
             },
             icon: const Icon(Icons.edit_outlined, size: 18),
-            label: const Text('تعديل الملف الشخصي'),
+            label: Text(l10n.parentProfileEditProfile),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3A8F8E),
               foregroundColor: Colors.white,
@@ -353,7 +361,7 @@ class ParentProfilePage extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: () => context.go('/login'),
             icon: const Icon(Icons.logout, size: 18),
-            label: const Text('تسجيل الخروج'),
+            label: Text(l10n.logout),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.redAccent,
               side: const BorderSide(color: Colors.redAccent),

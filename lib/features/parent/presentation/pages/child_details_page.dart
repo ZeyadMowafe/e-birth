@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../domain/entities/child_entity.dart';
 import '../cubit/child_details_cubit.dart';
@@ -38,12 +39,12 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
     super.dispose();
   }
 
-  String _formatAge(ChildEntity? c) {
+  String _formatAge(ChildEntity? c, AppLocalizations l10n) {
     if (c == null) return '--';
     if (c.ageWithYears > 0)
-      return '${c.ageWithYears} سنة و ${c.ageWithMonths} شهر';
-    if (c.ageWithMonths > 0) return '${c.ageWithMonths} شهر';
-    return 'حديث الولادة';
+      return l10n.ageYearsMonths(c.ageWithYears, c.ageWithMonths);
+    if (c.ageWithMonths > 0) return l10n.ageMonths(c.ageWithMonths);
+    return l10n.newborn;
   }
 
   String _formatDate(String raw) {
@@ -55,19 +56,20 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
     }
   }
 
-  String _formatGender(String g) {
-    if (g.toLowerCase() == 'male' || g == 'ذكر') return 'ذكر';
-    if (g.toLowerCase() == 'female' || g == 'أنثى') return 'أنثى';
+  String _formatGender(String g, AppLocalizations l10n) {
+    if (g.toLowerCase() == 'male' || g == 'ذكر') return l10n.male;
+    if (g.toLowerCase() == 'female' || g == 'أنثى') return l10n.female;
     return g;
   }
 
-  String _formatBlood(String? b) {
-    if (b == null) return 'غير متوفر';
+  String _formatBlood(String? b, AppLocalizations l10n) {
+    if (b == null) return l10n.notAvailable;
     return b.replaceAll('_Positive', '+').replaceAll('_Negative', '-');
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final initialChild = widget.initialChild;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -109,8 +111,8 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                     const SizedBox(width: 12),
                     Text(
                       widget.initialChild?.userType == 'Parent'
-                          ? 'ملف المريض'
-                          : 'ملف الطفل',
+                          ? l10n.childDetailsTitle
+                          : l10n.childDetailsChildTitle,
                       style: GoogleFonts.readexPro(
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
@@ -186,7 +188,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                initialChild?.fullName ?? 'جاري التحميل...',
+                                initialChild?.fullName ?? l10n.loading,
                                 style: GoogleFonts.readexPro(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
@@ -197,7 +199,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'العمر: ${_formatAge(initialChild)}',
+                                l10n.childCardAge(_formatAge(initialChild, l10n)),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Color(0xFF6B7280),
@@ -208,10 +210,10 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                                 builder: (context, state) {
                                   final nationalId = state is ChildDetailsLoaded
                                       ? (state.childDetails.childNationalId ??
-                                            'غير متوفر')
+                                            l10n.notAvailable)
                                       : (initialChild?.childNationalId ?? '-');
                                   return Text(
-                                    'ر.ق: $nationalId',
+                                    l10n.doctorSearchNationalId(nationalId),
                                     style: const TextStyle(
                                       fontSize: 11,
                                       color: Color(0xFF9CA3AF),
@@ -238,10 +240,10 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildTab(0, 'البيانات الأساسية'),
+                      _buildTab(0, l10n.childDetailsBasicInfo),
                       if (widget.initialChild?.userType != 'Parent')
-                        _buildTab(1, 'جدول التطعيمات'),
-                      _buildTab(2, 'التاريخ المرضي'),
+                        _buildTab(1, l10n.childDetailsVaccinations),
+                      _buildTab(2, l10n.childDetailsMedicalHistory),
                     ],
                   ),
                 ),
@@ -280,7 +282,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'حدث خطأ: ${state.message}',
+                              '${l10n.errorOccurred}: ${state.message}',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.readexPro(fontSize: 13),
                             ),
@@ -288,7 +290,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                             ElevatedButton(
                               onPressed: () =>
                                   _cubit.fetchChildDetails(widget.childId),
-                              child: const Text('إعادة المحاولة'),
+                              child: Text(l10n.retry),
                             ),
                           ],
                         ),
@@ -340,7 +342,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'التاريخ المرضي والزيارات',
+                                          l10n.childDetailsMedicalHistoryTitle,
                                           style: GoogleFonts.readexPro(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -348,7 +350,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
                                           ),
                                         ),
                                         Text(
-                                          'عرض لجميع التشخيصات والتقارير الطبية السابقة',
+                                          l10n.childDetailsMedicalHistoryDesc,
                                           style: GoogleFonts.readexPro(
                                             fontSize: 11,
                                             color: const Color(0xFF6B7280),
@@ -428,6 +430,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
 
   // ── Basic Info Card (341×541) ────────────────────────────────────
   Widget _buildInfoCard(ChildEntity child, double screenWidth) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: 341,
       padding: const EdgeInsets.all(24),
@@ -464,7 +467,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
               ),
               const SizedBox(width: 8),
               Text(
-                'المعلومات الشخصية',
+                l10n.childDetailsPersonalInfo,
                 style: GoogleFonts.readexPro(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -477,58 +480,58 @@ class _ChildDetailsPageState extends State<ChildDetailsPage> {
 
           _infoRow(
             icon: Icons.person_outline,
-            label: 'الاسم بالكامل',
+            label: l10n.fullName,
             value: child.fullName,
           ),
           _divider(),
           _infoRow(
             icon: Icons.badge_outlined,
-            label: 'الرقم القومي',
-            value: child.childNationalId ?? 'غير متوفر',
+            label: l10n.nationalId,
+            value: child.childNationalId ?? l10n.notAvailable,
           ),
           _divider(),
           _infoRow(
             icon: Icons.cake_outlined,
-            label: 'تاريخ الميلاد',
+            label: l10n.birthDate,
             value: _formatDate(child.birthDate),
           ),
           _divider(),
           _infoRow(
             icon: Icons.access_time_outlined,
-            label: 'العمر',
-            value: _formatAge(child),
+            label: l10n.age,
+            value: _formatAge(child, l10n),
           ),
           _divider(),
           _infoRow(
             icon: child.gender.toLowerCase() == 'female'
                 ? Icons.female
                 : Icons.male,
-            label: 'الجنس',
-            value: _formatGender(child.gender),
+            label: l10n.gender,
+            value: _formatGender(child.gender, l10n),
           ),
           _divider(),
           _infoRow(
             icon: Icons.water_drop_outlined,
-            label: 'فصيلة الدم',
-            value: _formatBlood(child.bloodType),
+            label: l10n.bloodType,
+            value: _formatBlood(child.bloodType, l10n),
           ),
           _divider(),
           _infoRow(
             icon: Icons.location_city_outlined,
-            label: 'المحافظة',
-            value: child.governorate ?? 'غير متوفر',
+            label: l10n.governorate,
+            value: child.governorate ?? l10n.notAvailable,
           ),
           _divider(),
           _infoRow(
             icon: Icons.apartment_outlined,
-            label: 'المدينة',
-            value: child.city ?? 'غير متوفر',
+            label: l10n.city,
+            value: child.city ?? l10n.notAvailable,
           ),
           _divider(),
           _infoRow(
             icon: Icons.holiday_village_outlined,
-            label: 'القرية',
-            value: child.village ?? 'غير متوفر',
+            label: l10n.village,
+            value: child.village ?? l10n.notAvailable,
           ),
         ],
       ),

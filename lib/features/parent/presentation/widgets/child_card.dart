@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/child_entity.dart';
 
@@ -13,13 +14,13 @@ class ChildCard extends StatelessWidget {
     required this.onTap,
   });
 
-  String _formatAge() {
+  String _formatAge(AppLocalizations l10n) {
     if (child.ageWithYears > 0) {
-      return '${child.ageWithYears} سنة';
+      return l10n.ageYearsMonths(child.ageWithYears, child.ageWithMonths);
     } else if (child.ageWithMonths > 0) {
-      return '${child.ageWithMonths} شهر';
+      return l10n.ageMonths(child.ageWithMonths);
     }
-    return 'حديث الولادة';
+    return l10n.newborn;
   }
 
   String _formatDate(String raw) {
@@ -33,6 +34,7 @@ class ChildCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isFemal = child.gender.toLowerCase().contains('female') ||
         child.gender == 'أنثى' ||
         child.gender == 'f' ||
@@ -117,7 +119,7 @@ class ChildCard extends StatelessWidget {
                     // Age
                     _InfoRow(
                       icon: Icons.cake_outlined,
-                      label: 'العمر: ${_formatAge()}',
+                      label: l10n.childCardAge(_formatAge(l10n)),
                     ),
                     const SizedBox(height: 2),
                     // Birth date + gender
@@ -130,7 +132,7 @@ class ChildCard extends StatelessWidget {
                       icon: isFemal
                           ? Icons.female_outlined
                           : Icons.male_outlined,
-                      label: isFemal ? 'أنثى' : 'ذكر',
+                      label: isFemal ? l10n.female : l10n.male,
                     ),
                   ],
                 ),
@@ -152,7 +154,7 @@ class ChildCard extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: Text(
-                'عرض الملف الكامل',
+                l10n.childCardViewProfile,
                 style: GoogleFonts.readexPro(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

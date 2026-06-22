@@ -3,12 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
 import 'package:ebirth/core/widgets/auth_layout.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AuthLayout(
       showLogo: false,
       showBackButton: true,
@@ -16,7 +18,7 @@ class RoleSelectionPage extends StatelessWidget {
       headerTopPadding: 90.0,
       bottomSheetHeight: 644,
       bottomSheetPadding: const EdgeInsets.only(top: 32, left: 24, right: 24),
-      title: 'إنشاء حساب جديد',
+      title: l10n.roleSelectionTitle,
       titleStyle: const TextStyle(
         fontFamily: 'Arial',
         fontWeight: FontWeight.w700, // Bold
@@ -24,7 +26,7 @@ class RoleSelectionPage extends StatelessWidget {
         height: 40 / 40,
         color: Colors.white,
       ),
-      subtitle: 'حدد نوع الحساب الذي تريد إنشاءه',
+      subtitle: l10n.roleSelectionSubtitle,
       subtitleStyle: const TextStyle(
         fontWeight: FontWeight.w600, // SemiBold
         fontSize: 16,
@@ -43,8 +45,8 @@ class RoleSelectionPage extends StatelessWidget {
               delay: const Duration(milliseconds: 100),
               child: _RoleCard(
                 icon: Icons.person_outline,
-                title: 'ولي أمر',
-                subtitle: ' حساب للآباء والأمهات لمتابعة أطفالهم',
+                title: l10n.roleParent,
+                subtitle: l10n.roleParentDesc,
                 gradient: const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -64,8 +66,8 @@ class RoleSelectionPage extends StatelessWidget {
               delay: const Duration(milliseconds: 300),
               child: _RoleCard(
                 icon: Icons.monitor_heart_outlined,
-                title: 'طبيب',
-                subtitle: 'حساب للأطباء لإدارة السجلات الطبية',
+                title: l10n.roleDoctor,
+                subtitle: l10n.roleDoctorDesc,
                 gradient: const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -86,7 +88,7 @@ class RoleSelectionPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'لديك حساب بالفعل؟',
+                    l10n.roleAlreadyHaveAccount,
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 14,
@@ -94,8 +96,8 @@ class RoleSelectionPage extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () => context.pop(),
-                    child: const Text(
-                      'تسجيل الدخول',
+                    child: Text(
+                      l10n.roleSignIn,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,

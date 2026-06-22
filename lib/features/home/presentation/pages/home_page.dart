@@ -1,8 +1,9 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/cubit/locale_cubit.dart';
 import 'package:ebirth/core/widgets/tap_unfocus.dart';
 import 'package:ebirth/features/auth/domain/entities/user_entity.dart';
 import 'package:ebirth/core/helper/auth_token_holder.dart';
@@ -10,6 +11,7 @@ import 'package:ebirth/core/helper/shared_prefs_helper.dart';
 import '../../../../features/parent/presentation/pages/parent_dashboard_view.dart';
 import '../widgets/doctor_dashboard_view.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:ebirth/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   final UserEntity? user;
@@ -17,6 +19,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final displayName = user?.displayName ?? '';
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -41,7 +44,7 @@ class HomePage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
-                    'assets/images/splash_logo.png',
+                    'assets/icons/logo.png',
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -62,7 +65,7 @@ class HomePage extends StatelessWidget {
                   ),
                   if (displayName.isNotEmpty)
                     Text(
-                      'أهلاً بك، $displayName',
+                      '${l10n.homeWelcome} $displayName',
                       style: GoogleFonts.readexPro(
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
@@ -145,7 +148,7 @@ class HomePage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            displayName.isNotEmpty ? displayName : 'مستخدم التطبيق',
+                            displayName.isNotEmpty ? displayName : l10n.homeUnknownUser,
                             style: GoogleFonts.readexPro(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -155,8 +158,8 @@ class HomePage extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             user?.role.toLowerCase().contains('doctor') == true
-                                ? 'حساب طبيب'
-                                : 'حساب ولي أمر',
+                                ? l10n.doctorAccount
+                                : l10n.parentAccount,
                             style: GoogleFonts.readexPro(
                               fontSize: 12,
                               color: const Color(0xFF4B5563),
@@ -173,7 +176,7 @@ class HomePage extends StatelessWidget {
               // Settings Options
               _buildDrawerItem(
                 icon: Icons.person_outline,
-                title: 'الملف الشخصي',
+                title: l10n.profile,
                 onTap: () {
                   Navigator.of(context).pop();
                   context.pushNamed('profile', extra: user);
@@ -181,7 +184,7 @@ class HomePage extends StatelessWidget {
               ),
               _buildDrawerItem(
                 icon: Icons.history_edu_outlined,
-                title: 'تاريخي الطبي',
+                title: l10n.medicalHistory,
                 onTap: () {
                   Navigator.of(context).pop();
                   context.pushNamed('parent-medical-history', extra: user);
@@ -189,7 +192,7 @@ class HomePage extends StatelessWidget {
               ),
               _buildDrawerItem(
                 icon: Icons.notifications_none_outlined,
-                title: 'الإشعارات',
+                title: l10n.notifications,
                 onTap: () {
                   Navigator.of(context).pop();
                   // TODO: Navigate to notifications
@@ -197,14 +200,17 @@ class HomePage extends StatelessWidget {
               ),
               _buildDrawerItem(
                 icon: Icons.language_outlined,
-                title: 'اللغة (العربية)',
+                title: context.select((LocaleCubit c) => c.state.languageCode) == 'ar'
+                    ? 'English'
+                    : 'العربية',
                 onTap: () {
                   Navigator.of(context).pop();
+                  context.read<LocaleCubit>().toggle();
                 },
               ),
               _buildDrawerItem(
                 icon: Icons.help_outline,
-                title: 'المساعدة والدعم',
+                title: l10n.helpAndSupport,
                 onTap: () {
                   Navigator.of(context).pop();
                 },
@@ -235,7 +241,7 @@ class HomePage extends StatelessWidget {
                         const Icon(Icons.logout, color: Color(0xFFEF4444), size: 20),
                         const SizedBox(width: 8),
                         Text(
-                          'تسجيل الخروج',
+                          l10n.logout,
                           style: GoogleFonts.readexPro(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -314,8 +320,8 @@ class HomePage extends StatelessWidget {
                                 children: [
                                     Text(
                                       user?.role.toLowerCase().contains('doctor') == true
-                                          ? 'أهلاً دكتور'
-                                          : 'مرحبا بك',
+                                          ? l10n.homeDoctorGreeting
+                                          : l10n.homeWelcomeSubtitle,
                                       style: GoogleFonts.readexPro(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -325,8 +331,8 @@ class HomePage extends StatelessWidget {
                                     ),
                                     Text(
                                       user?.role.toLowerCase().contains('doctor') == true
-                                          ? 'نظام المواليد - لوحة تحكم الطبيب'
-                                          : 'تابع صحة أطفالك بكل سهولة',
+                                          ? l10n.homeDoctorTitle
+                                          : l10n.homeDoctorDesc,
                                       style: GoogleFonts.readexPro(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w400,
@@ -362,7 +368,7 @@ class HomePage extends StatelessWidget {
                       else
                         Center(
                           child: Text(
-                            'لم يتم التعرف على حساب المستخدم.',
+                            l10n.homeUnknownUser,
                             style: GoogleFonts.readexPro(
                               color: AppColors.textSecondary,
                             ),

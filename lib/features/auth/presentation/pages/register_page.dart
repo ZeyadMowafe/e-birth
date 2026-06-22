@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ebirth/core/constants/app_colors.dart';
+import 'package:ebirth/core/widgets/app_toast.dart';
 import 'package:ebirth/core/di/injection_container.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:ebirth/features/auth/presentation/cubit/register_state.dart';
@@ -42,27 +43,7 @@ class _RegisterView extends StatelessWidget {
             context.goNamed('pending-approval');
           } else {
             // Parent → show success and go to login
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle_outline,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(l10n.accountCreated(state.user.name))),
-                  ],
-                ),
-                backgroundColor: AppColors.success,
-                behavior: SnackBarBehavior.floating,
-                margin: const EdgeInsets.all(16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            );
+            AppToast.success(context, l10n.accountCreated(state.user.name));
             context.goNamed('login');
           }
         }
@@ -73,7 +54,7 @@ class _RegisterView extends StatelessWidget {
         headerCrossAxisAlignment: CrossAxisAlignment.start,
         headerTopPadding: 90.0, // Same to fit the title appropriately
         bottomSheetHeight: MediaQuery.of(context).size.height * 0.72,
-        title: 'إنشاء حساب جديد',
+        title: l10n.registerNewAccount,
         titleStyle: const TextStyle(
           fontFamily: 'Arial',
           fontWeight: FontWeight.w700, // Bold
@@ -81,7 +62,7 @@ class _RegisterView extends StatelessWidget {
           height: 40 / 40,
           color: Colors.white,
         ),
-        subtitle: 'انضم إلى نظام E-Birth لمتابعة صحة مولودك',
+        subtitle: l10n.registerJoinNow,
         subtitleStyle: const TextStyle(
           fontWeight: FontWeight.w600, // SemiBold
           fontSize: 16,
